@@ -98,7 +98,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				};
 			}
-		}).asArray((Class)Callable.class);
+		}).asArray(new TypeRef<Callable<T>>(){}.clazz());
 		try {
 			return Sequences.fromIterable(
 					executor.invokeAll(Arrays.asList(tasks)))

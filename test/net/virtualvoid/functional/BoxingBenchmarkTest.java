@@ -1,6 +1,5 @@
 package net.virtualvoid.functional;
 
-import static java.text.MessageFormat.format;
 import static org.testng.AssertJUnit.assertEquals;
 import net.virtualvoid.functional.Functions.Function0;
 import net.virtualvoid.functional.Functions.Function1;
@@ -8,19 +7,6 @@ import net.virtualvoid.functional.Functions.Function1;
 import org.testng.annotations.Test;
 
 public class BoxingBenchmarkTest {
-	public static long benchmark(int times,Function0<?> runner){
-		long time = System.nanoTime();
-
-		for (;times>=0;times--)
-			runner.apply();
-
-		long stop = System.nanoTime();
-		return stop - time;
-	}
-	public static void richBenchmark(String name,int times,Function0<?>runner){
-		long time = benchmark(times,runner);
-		System.out.println(format("{0}: {1,number} ns = {2,number} ns/run",name,time,(double)time/times));
-	}
 	public static abstract class Blub{
 		public abstract int[]blub();
 	}
@@ -186,7 +172,7 @@ public class BoxingBenchmarkTest {
 	@Test
 	public void benchmarkPredicatesRaw(){
 		final int []is = ints2(1000);
-		richBenchmark("raw w/ backward for loop",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("raw w/ backward for loop",1000000,new Function0<Object>(){
 			public Object apply() {
 				int []a = is;
 				int len = a.length-1;
@@ -196,14 +182,14 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		});
-		richBenchmark("handcrafted jvm bytecodes",100000,new Runner(){
+		Benchmark.benchmarkAndReport("handcrafted jvm bytecodes",100000,new Runner(){
 			@Override
 			public int[] is() {
 				return is;
 			}
 		});
 		IntAllocator alloc = new IntAllocator();
-		richBenchmark("Integer.valueOf of values 1 to 1000",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
+		Benchmark.benchmarkAndReport("Integer.valueOf of values 1 to 1000",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
 			public Object apply() {
 
 				for (int i=0;i<1000;i++)
@@ -211,7 +197,7 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		}));
-		richBenchmark("raw w/ while loop",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("raw w/ while loop",1000000,new Function0<Object>(){
 			public Object apply() {
 				int []a = is;
 				int len = a.length-1;
@@ -223,7 +209,7 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		});
-		richBenchmark("raw w/ forward for loop",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("raw w/ forward for loop",1000000,new Function0<Object>(){
 			public Object apply() {
 				int []a = is;
 				int len = a.length;
@@ -233,7 +219,7 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		});
-		richBenchmark("raw w/ enhanced for loop",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("raw w/ enhanced for loop",1000000,new Function0<Object>(){
 			public Object apply() {
 				int []a = is;
 				for (int i:a)
@@ -248,7 +234,7 @@ public class BoxingBenchmarkTest {
 				return arg % 2 == 0;
 			}
 		};
-		richBenchmark("with IntFunc",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with IntFunc",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,intF);
 				return null;
@@ -259,7 +245,7 @@ public class BoxingBenchmarkTest {
 				return arg % 2 == 0 ? Boolean.TRUE : Boolean.FALSE;
 			}
 		};
-		richBenchmark("with better IntFunc",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with better IntFunc",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,intF2);
 				return null;
@@ -270,27 +256,27 @@ public class BoxingBenchmarkTest {
 				return i % 2 == 0;
 			}
 		};
-		richBenchmark("with specialized interface int=>boolean",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with specialized interface int=>boolean",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,even);
 				return null;
 			}
 		});
-		richBenchmark("with specialized final interface int=>boolean",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with specialized final interface int=>boolean",1000000,new Function0<Object>(){
 			public Object apply() {
 				selectFinal(is,even);
 				return null;
 			}
 		});
 		final KnownPredicate kp = new KnownPredicate();
-		richBenchmark("with known class",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with known class",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,kp);
 				return null;
 			}
 		});
 		final KnownPredicate2 kp2 = new KnownPredicate2();
-		richBenchmark("with known class with final method",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with known class with final method",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,kp2);
 				return null;
@@ -301,7 +287,7 @@ public class BoxingBenchmarkTest {
 				return arg % 2 ==0;
 			}
 		};
-		richBenchmark("with generic predicate (boxed ints)",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with generic predicate (boxed ints)",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,gp);
 				return null;
@@ -312,7 +298,7 @@ public class BoxingBenchmarkTest {
 				return arg.intValue() % 2 ==0;
 			}
 		};
-		richBenchmark("with generic predicate (int allocator)",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with generic predicate (int allocator)",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
 			public Object apply() {
 				selectWithAllocator(is,gp2);
 				return null;
@@ -323,7 +309,7 @@ public class BoxingBenchmarkTest {
 				return arg % 2 == 0;
 			}
 		};
-		richBenchmark("with Function1",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with Function1",1000000,new Function0<Object>(){
 			public Object apply() {
 				select(is,func);
 				return null;
@@ -335,7 +321,7 @@ public class BoxingBenchmarkTest {
 				return arg.intValue() % 2 == 0 ?Boolean.TRUE:Boolean.FALSE;
 			}
 		};
-		richBenchmark("with IntAllocator",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
+		Benchmark.benchmarkAndReport("with IntAllocator",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
 			public Object apply() {
 				selectWithAlloc(is,func2);
 				return null;

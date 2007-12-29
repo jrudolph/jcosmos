@@ -109,26 +109,26 @@ public class ArrayTest {
 	}
 	@Test(dataProvider="namedSeqs")
 	public void testReduceVsFoldTimes(final String art,final ISequence<Integer> seq){
-		Benchmark.benchmarkAndReport(1000, new Function0<Object>(){
-			public Object apply() {
-				seq.reduce(add, 0);
-				return null;
+		Benchmark.shootout(1000, new Function0<Object>(){
+				public Object apply() {
+					seq.fold (add, 0);
+					return null;
+				}
+				@Override
+				public String toString() {
+					return "fold with" +art;
+				}
 			}
-			@Override
-			public String toString() {
-				return "reduce with "+art;
-			}
-		});
-		Benchmark.benchmarkAndReport(1000, new Function0<Object>(){
-			public Object apply() {
-				seq.fold (add, 0);
-				return null;
-			}
-			@Override
-			public String toString() {
-				return "fold with" +art;
-			}
-		});
+			,new Function0<Object>(){
+				public Object apply() {
+					seq.reduce(add, 0);
+					return null;
+				}
+				@Override
+				public String toString() {
+					return "reduce with "+art;
+				}
+			});
 	}
 	@Test
 	public void testAsArray(){

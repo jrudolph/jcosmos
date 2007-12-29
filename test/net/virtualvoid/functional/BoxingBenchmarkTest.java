@@ -1,6 +1,7 @@
 package net.virtualvoid.functional;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static java.text.MessageFormat.format;
+import net.virtualvoid.functional.Benchmark.BenchFunc;
 import net.virtualvoid.functional.Functions.Function0;
 import net.virtualvoid.functional.Functions.Function1;
 
@@ -10,20 +11,6 @@ public class BoxingBenchmarkTest {
 	public static abstract class Blub{
 		public abstract int[]blub();
 	}
-	/*static abstract class Benchmark{
-		protected abstract void run();
-		public String name =
-		public long execute(){
-			long time = System.nanoTime();
-			run();
-			long stop = System.nanoTime();
-			return stop - time;
-		}
-		public void executeAndPrint(){
-			long time = execute();
-
-		}
-	}*/
 	static int[] ints2(int number){
 		int[] res = new int[number];
 		for (int i = 0;i<number;i++)
@@ -133,6 +120,10 @@ public class BoxingBenchmarkTest {
 				public ResT apply() {
 					return withIntAllocator(func);
 				}
+				@Override
+				public String toString() {
+					return format("IntAllocating {0}",func.toString());
+				}
 			};
 		}
 		public static MyInteger alloc(int v){
@@ -172,111 +163,36 @@ public class BoxingBenchmarkTest {
 	@Test
 	public void benchmarkPredicatesRaw(){
 		final int []is = ints2(1000);
-		Benchmark.benchmarkAndReport("raw w/ backward for loop",1000000,new Function0<Object>(){
-			public Object apply() {
-				int []a = is;
-				int len = a.length-1;
-				for (;len>= 0;len--)
-					if (a[len] % 2 == 0)
-						a[len] = -1;
-				return null;
-			}
-		});
-		Benchmark.benchmarkAndReport("handcrafted jvm bytecodes",100000,new Runner(){
-			@Override
-			public int[] is() {
-				return is;
-			}
-		});
 		IntAllocator alloc = new IntAllocator();
-		Benchmark.benchmarkAndReport("Integer.valueOf of values 1 to 1000",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
-			public Object apply() {
-
-				for (int i=0;i<1000;i++)
-					/*IntAllocator.delete(*/IntAllocator.alloc(i);//);
-				return null;
+		final Function1<Number,Boolean> func2 = new Function1<Number,Boolean>(){
+			public Boolean apply(Number arg) {
+				return arg.intValue() % 2 == 0 ?Boolean.TRUE:Boolean.FALSE;
 			}
-		}));
-		Benchmark.benchmarkAndReport("raw w/ while loop",1000000,new Function0<Object>(){
-			public Object apply() {
-				int []a = is;
-				int len = a.length-1;
-				while(len>= 0){
-					if (a[len] % 2 == 0)
-						a[len] = -1;
-					len--;
-				}
-				return null;
-			}
-		});
-		Benchmark.benchmarkAndReport("raw w/ forward for loop",1000000,new Function0<Object>(){
-			public Object apply() {
-				int []a = is;
-				int len = a.length;
-				for (int i=0;i < len;i++)
-					if (a[i] % 2 == 0)
-						a[i] = -1;
-				return null;
-			}
-		});
-		Benchmark.benchmarkAndReport("raw w/ enhanced for loop",1000000,new Function0<Object>(){
-			public Object apply() {
-				int []a = is;
-				for (int i:a)
-					if (i % 2 == 0)
-						a[0] = -1;
-
-				return null;
-			}
-		});
+		};
 		final IntFunc<Boolean> intF = new IntFunc<Boolean>(){
 			public Boolean pred(int arg) {
 				return arg % 2 == 0;
 			}
 		};
-		Benchmark.benchmarkAndReport("with IntFunc",1000000,new Function0<Object>(){
-			public Object apply() {
-				select(is,intF);
-				return null;
-			}
-		});
 		final IntFunc<Boolean> intF2 = new IntFunc<Boolean>(){
 			public Boolean pred(int arg) {
 				return arg % 2 == 0 ? Boolean.TRUE : Boolean.FALSE;
 			}
 		};
-		Benchmark.benchmarkAndReport("with better IntFunc",1000000,new Function0<Object>(){
-			public Object apply() {
-				select(is,intF2);
-				return null;
-			}
-		});
 		final Predicate even = new Predicate(){
 			public boolean pred(int i) {
 				return i % 2 == 0;
 			}
 		};
-		Benchmark.benchmarkAndReport("with specialized interface int=>boolean",1000000,new Function0<Object>(){
-			public Object apply() {
-				select(is,even);
-				return null;
-			}
-		});
-		Benchmark.benchmarkAndReport("with specialized final interface int=>boolean",1000000,new Function0<Object>(){
-			public Object apply() {
-				selectFinal(is,even);
-				return null;
-			}
-		});
 		final KnownPredicate kp = new KnownPredicate();
-		Benchmark.benchmarkAndReport("with known class",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport(1000000,new BenchFunc("with known class"){
 			public Object apply() {
 				select(is,kp);
 				return null;
 			}
 		});
 		final KnownPredicate2 kp2 = new KnownPredicate2();
-		Benchmark.benchmarkAndReport("with known class with final method",1000000,new Function0<Object>(){
+		Benchmark.benchmarkAndReport(1000000,new BenchFunc("with known class with final method"){
 			public Object apply() {
 				select(is,kp2);
 				return null;
@@ -287,47 +203,126 @@ public class BoxingBenchmarkTest {
 				return arg % 2 ==0;
 			}
 		};
-		Benchmark.benchmarkAndReport("with generic predicate (boxed ints)",1000000,new Function0<Object>(){
-			public Object apply() {
-				select(is,gp);
-				return null;
-			}
-		});
 		final GenPredicate<Number> gp2 = new GenPredicate<Number>(){
 			public boolean pred(Number arg) {
 				return arg.intValue() % 2 ==0;
 			}
 		};
-		Benchmark.benchmarkAndReport("with generic predicate (int allocator)",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
-			public Object apply() {
-				selectWithAllocator(is,gp2);
-				return null;
-			}
-		}));
+
 		final Function1<Integer,Boolean> func = new Function1<Integer,Boolean>(){
 			public Boolean apply(Integer arg) {
 				return arg % 2 == 0;
 			}
 		};
-		Benchmark.benchmarkAndReport("with Function1",1000000,new Function0<Object>(){
+
+		Benchmark.shootout(1000000,new BenchFunc("raw w/ backward for loop"){
+			public Object apply() {
+				int []a = is;
+				int len = a.length-1;
+				for (;len>= 0;len--)
+					if (a[len] % 2 == 0)
+						a[len] = -1;
+				return null;
+			}
+		}
+		,new Runner(){
+			@Override
+			public int[] is() {
+				return is;
+			}
+			@Override
+			public String toString() {
+				return "handcrafted jvm bytecodes";
+			}
+		}
+		,alloc.withIntAllocatorFunction(new BenchFunc("Integer.valueOf of values 1 to 1000"){
+			public Object apply() {
+
+				for (int i=0;i<1000;i++)
+					/*IntAllocator.delete(*/IntAllocator.alloc(i);//);
+				return null;
+			}
+		})
+		,new BenchFunc("raw w/ while loop"){
+			public Object apply() {
+				int []a = is;
+				int len = a.length-1;
+				while(len>= 0){
+					if (a[len] % 2 == 0)
+						a[len] = -1;
+					len--;
+				}
+				return null;
+			}
+		}
+		,new BenchFunc("raw w/ forward for loop"){
+			public Object apply() {
+				int []a = is;
+				int len = a.length;
+				for (int i=0;i < len;i++)
+					if (a[i] % 2 == 0)
+						a[i] = -1;
+				return null;
+			}
+		}
+		,new BenchFunc("raw w/ enhanced for loop"){
+			public Object apply() {
+				int []a = is;
+				for (int i:a)
+					if (i % 2 == 0)
+						a[0] = -1;
+
+				return null;
+			}
+		}
+		,new BenchFunc("with IntFunc"){
+			public Object apply() {
+				select(is,intF);
+				return null;
+			}
+		}
+		,new BenchFunc("with better IntFunc"){
+			public Object apply() {
+				select(is,intF2);
+				return null;
+			}
+		}
+		,new BenchFunc("with specialized interface int=>boolean"){
+			public Object apply() {
+				select(is,even);
+				return null;
+			}
+		}
+		,new BenchFunc("with specialized final interface int=>boolean"){
+			public Object apply() {
+				selectFinal(is,even);
+				return null;
+			}
+		}
+		,new BenchFunc("with generic predicate (boxed ints)"){
+			public Object apply() {
+				select(is,gp);
+				return null;
+			}
+		}
+		,alloc.withIntAllocatorFunction(new BenchFunc("with generic predicate (int allocator)"){
+			public Object apply() {
+				selectWithAllocator(is,gp2);
+				return null;
+			}
+		})
+		,new BenchFunc("with Function1"){
 			public Object apply() {
 				select(is,func);
 				return null;
 			}
-		});
-
-		final Function1<Number,Boolean> func2 = new Function1<Number,Boolean>(){
-			public Boolean apply(Number arg) {
-				return arg.intValue() % 2 == 0 ?Boolean.TRUE:Boolean.FALSE;
-			}
-		};
-		Benchmark.benchmarkAndReport("with IntAllocator",1000000,alloc.withIntAllocatorFunction(new Function0<Object>(){
+		}
+		,alloc.withIntAllocatorFunction(new BenchFunc("with IntAllocator"){
 			public Object apply() {
 				selectWithAlloc(is,func2);
 				return null;
 			}
 		}));
-
 	}
 	static class MyInteger extends Number {
 		int val;
@@ -348,7 +343,7 @@ public class BoxingBenchmarkTest {
 			return val;
 		}
 	}
-	@Test
+	/*@Test
 	public void testRunnerPutField(){
 
 		Integer i = new Integer(500);
@@ -360,5 +355,5 @@ public class BoxingBenchmarkTest {
 		};
 		r.test(i);
 		assertEquals(28,i.intValue());
-	}
+	}*/
 }

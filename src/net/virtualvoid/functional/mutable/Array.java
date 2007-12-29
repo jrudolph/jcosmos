@@ -1,9 +1,9 @@
 package net.virtualvoid.functional.mutable;
 
 import static java.text.MessageFormat.format;
-import net.virtualvoid.functional.AbstractRichRandomAccessSequence;
+import net.virtualvoid.functional.AbstractRandomAccessSequence;
 
-public class Array<T> extends AbstractRichRandomAccessSequence<T>{
+public class Array<T> extends AbstractRandomAccessSequence<T>{
 	private final T[] array;
 	public Array(T...els){
 		array = els;

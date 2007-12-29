@@ -4,18 +4,18 @@ import static java.text.MessageFormat.format;
 import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.Function2;
 
-public abstract class AbstractRichRandomAccessSequence<T>
+public abstract class AbstractRandomAccessSequence<T>
 	extends AbstractRichSequence<T>
-	implements IRichRandomAccessSequence<T>{
+	implements IRandomAccessSequence<T>{
 
-	public IRichRandomAccessSequence<T> sublist(final int from, final int length) {
+	public IRandomAccessSequence<T> sublist(final int from, final int length) {
 		assert from >= 0;
 		assert length > 0;
 		assert from + length <= length();
 
-		return new AbstractRichRandomAccessSequence<T>(){
+		return new AbstractRandomAccessSequence<T>(){
 			public T get(int index) {
-				return AbstractRichRandomAccessSequence.this.get(from + index);
+				return AbstractRandomAccessSequence.this.get(from + index);
 			}
 			@Override
 			public int length() {
@@ -23,7 +23,7 @@ public abstract class AbstractRichRandomAccessSequence<T>
 			}
 			@Override
 			public String toString() {
-				return format("Sublist[{0}..{1}) of {2}",from,from+length,AbstractRichRandomAccessSequence.this.toString());
+				return format("Sublist[{0}..{1}) of {2}",from,from+length,AbstractRandomAccessSequence.this.toString());
 			}
 		};
 	}
@@ -42,7 +42,7 @@ public abstract class AbstractRichRandomAccessSequence<T>
 					Function2<? super U, ? super ISequence<T>, U> func,
 					U start) {
 				int i = 0;
-				AbstractRichRandomAccessSequence<T> outerThis = AbstractRichRandomAccessSequence.this;
+				AbstractRandomAccessSequence<T> outerThis = AbstractRandomAccessSequence.this;
 				int len = outerThis.length();
 				int partSize = Math.max(1,(int)Math.ceil((double)len / parts));
 				while (i < len){
@@ -54,14 +54,14 @@ public abstract class AbstractRichRandomAccessSequence<T>
 		};
 	}
 	@Override
-	public <V> IRichRandomAccessSequence<V> map(final Function1<? super T, V> func) {
-		return new AbstractRichRandomAccessSequence<V>(){
+	public <V> IRandomAccessSequence<V> map(final Function1<? super T, V> func) {
+		return new AbstractRandomAccessSequence<V>(){
 			@Override
 			public int length() {
-				return AbstractRichRandomAccessSequence.this.length();
+				return AbstractRandomAccessSequence.this.length();
 			}
 			public V get(int index) {
-				return func.apply(AbstractRichRandomAccessSequence.this.get(index));
+				return func.apply(AbstractRandomAccessSequence.this.get(index));
 			};
 		};
 	}

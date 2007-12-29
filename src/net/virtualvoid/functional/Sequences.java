@@ -18,8 +18,8 @@ public class Sequences {
 			}
 		};
 	}
-	public static IRichRandomAccessSequence<Integer> range(final Integer from, final int toExclusive){
-		return new AbstractRichRandomAccessSequence<Integer>(){
+	public static IRandomAccessSequence<Integer> range(final Integer from, final int toExclusive){
+		return new AbstractRandomAccessSequence<Integer>(){
 			public Integer get(int index) {
 				return from + index;
 			}
@@ -52,7 +52,7 @@ public class Sequences {
 			}
 		};
 	}
-	public final static <T> ISequence<T> singleton(final T element){
+	public static <T> ISequence<T> singleton(final T element){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return func.apply(start, element);
@@ -67,12 +67,30 @@ public class Sequences {
 			}
 		};
 	}
-	public final static <T> ISequence<T> fromIterable(final Iterable<T> it){
+	public static <T> ISequence<T> fromIterable(final Iterable<T> it){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				for(T ele:it)
 					start = func.apply(start, ele);
 				return start;
+			}
+		};
+	}
+	public static <T> ISequence<T> fromFoldable(final IFoldable<T> foldable){
+		return new AbstractRichSequence<T>(){
+			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+				return foldable.fold(func, start);
+			}
+		};
+	}
+	public static <T> IRandomAccessSequence<T> fromRandomAccessable(final IRandomAccessable<T> accessable){
+		return new AbstractRandomAccessSequence<T>(){
+			public T get(int index) {
+				return accessable.get(index);
+			}
+			@Override
+			public int length() {
+				return accessable.length();
 			}
 		};
 	}

@@ -14,7 +14,7 @@ import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Tuples.Tuple2;
 
-public abstract class AbstractRichSequence<T> implements IRichSequence<T>{
+public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	@SuppressWarnings("unchecked")
 	public T[] asArray() {
 		T[] res = (T[])new Object[length()];
@@ -33,7 +33,7 @@ public abstract class AbstractRichSequence<T> implements IRichSequence<T>{
 	public int length() {
 		return fold(Integers.succ.withIgnoredArg(),0);
 	}
-	public <V> IRichSequence<V> map(final Function1<? super T, V> func) {
+	public <V> ISequence<V> map(final Function1<? super T, V> func) {
 		return new AbstractRichSequence<V>(){
 			public <U> U fold(final Function2<? super U, ? super V, U> foldFunc, U start) {
 				return AbstractRichSequence.this.fold(new Function2<U,T,U>(){
@@ -44,7 +44,7 @@ public abstract class AbstractRichSequence<T> implements IRichSequence<T>{
 			}
 		};
 	}
-	public IRichSequence<T> select(final Function1<? super T, Boolean> predicate) {
+	public ISequence<T> select(final Function1<? super T, Boolean> predicate) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(final Function2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(new Function2<U,T,U>(){
@@ -58,7 +58,7 @@ public abstract class AbstractRichSequence<T> implements IRichSequence<T>{
 			}
 		};
 	}
-	public IRichSequence<Tuple2<Integer, T>> withIndex() {
+	public ISequence<Tuple2<Integer, T>> withIndex() {
 		return new AbstractRichSequence<Tuple2<Integer,T>>(){
 			public <U> U fold(
 					final Function2<? super U, ? super Tuple2<Integer, T>, U> func,
@@ -72,15 +72,15 @@ public abstract class AbstractRichSequence<T> implements IRichSequence<T>{
 			}
 		};
 	}
-	public IRichSequence<? extends IRichSequence<T>> partition(int parts){
+	public ISequence<? extends ISequence<T>> partition(int parts){
 		return Sequences.singleton(this);
 	}
 	private final static int THREADS = 2;
 	private final static ExecutorService executor = Executors.newFixedThreadPool(THREADS);
 	public T reduce(final Function2<? super T, ? super T, T> func, final T start) {
 		//return fold(func,start);
-		Object[] tasks = partition(THREADS).map(new Function1<IRichSequence<T>,Callable<T>>(){
-			public Callable<T> apply(final IRichSequence<T> arg1) {
+		Object[] tasks = partition(THREADS).map(new Function1<ISequence<T>,Callable<T>>(){
+			public Callable<T> apply(final ISequence<T> arg1) {
 				return new Callable<T>(){
 					public T call() throws Exception {
 						T res = arg1.fold(func, start);

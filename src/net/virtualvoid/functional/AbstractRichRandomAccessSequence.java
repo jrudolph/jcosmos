@@ -36,10 +36,10 @@ public abstract class AbstractRichRandomAccessSequence<T>
 	public abstract int length();
 
 	@Override
-	public IRichSequence<? extends IRichSequence<T>> partition(final int parts) {
-		return new AbstractRichSequence<IRichSequence<T>>(){
+	public ISequence<? extends ISequence<T>> partition(final int parts) {
+		return new AbstractRichSequence<ISequence<T>>(){
 			public <U> U fold(
-					Function2<? super U, ? super IRichSequence<T>, U> func,
+					Function2<? super U, ? super ISequence<T>, U> func,
 					U start) {
 				int i = 0;
 				AbstractRichRandomAccessSequence<T> outerThis = AbstractRichRandomAccessSequence.this;

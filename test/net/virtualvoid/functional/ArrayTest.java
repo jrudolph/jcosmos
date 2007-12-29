@@ -48,9 +48,9 @@ public class ArrayTest {
 		}
 	};
 	private final static Array<Integer> array = Array.instance(1,2,3,4,5,6);
-	private final static IRichSequence<Integer> arraySublist = Array.instance(1,1,1,0,1,2,3,4,5,6,7,8).sublist(4,6);
-	private final static IRichSequence<Integer> rangeSeq = Sequences.range(1, 7);
-	private final static IRichSequence<Integer> rangeSeqSublist = Sequences.range(-6, 12).sublist(7,6);
+	private final static ISequence<Integer> arraySublist = Array.instance(1,1,1,0,1,2,3,4,5,6,7,8).sublist(4,6);
+	private final static ISequence<Integer> rangeSeq = Sequences.range(1, 7);
+	private final static ISequence<Integer> rangeSeqSublist = Sequences.range(-6, 12).sublist(7,6);
 
 	@DataProvider
 	public Object[][]sequences(){
@@ -63,13 +63,13 @@ public class ArrayTest {
 	}
 
 	@Test(dataProvider = "sequences")
-	public void testFold(IRichSequence<Integer> numbers){
+	public void testFold(ISequence<Integer> numbers){
 		int sum = numbers.fold(add, 0);
 		assertEquals(21,sum);
 	}
 	@Test(dataProvider = "sequences")
-	public void testSelect(IRichSequence<Integer> numbers){
-		IRichSequence<Integer> evenOnes = numbers.select(even);
+	public void testSelect(ISequence<Integer> numbers){
+		ISequence<Integer> evenOnes = numbers.select(even);
 		assertEquals(3,evenOnes.length());
 		assertEquals("2,4,6",evenOnes.map(toStringF).fold(join(","), new StringBuilder()).toString());
 	}
@@ -77,7 +77,7 @@ public class ArrayTest {
 	@Test
 	public void testArrayPartition(){
 		Object[] oa=array.partition(3).asArray();
-		IRichSequence<Integer>[] ar = new IRichSequence[oa.length];
+		ISequence<Integer>[] ar = new ISequence[oa.length];
 		System.arraycopy(oa, 0, ar, 0, oa.length);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
@@ -85,7 +85,7 @@ public class ArrayTest {
 		assertEquals(2,ar[2].length());
 
 		oa=array.partition(4).asArray();
-		ar = new IRichSequence[oa.length];
+		ar = new ISequence[oa.length];
 		System.arraycopy(oa, 0, ar, 0, oa.length);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
@@ -113,7 +113,7 @@ public class ArrayTest {
 		};
 	}
 	@Test(dataProvider="namedSeqs")
-	public void testReduceVsFoldTimes(String art,final IRichSequence<Integer> seq){
+	public void testReduceVsFoldTimes(String art,final ISequence<Integer> seq){
 		richBenchmark("reduce with "+art, 10000, new Function0<Object>(){
 			public Object apply() {
 				seq.reduce(add, 0);

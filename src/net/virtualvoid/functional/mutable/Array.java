@@ -11,11 +11,10 @@ public class Array<T> extends AbstractRandomAccessSequence<T>{
 	public static <T> Array<T> instance(T... els){
 		return new Array<T>(els);
 	}
-	@SuppressWarnings("unchecked")
 	@Override
-	public T[] asArray() {
+	public T[] asArray(Class<T> elementClass) {
 		int len = array.length;
-		T[] res = (T[]) java.lang.reflect.Array.newInstance(array.getClass().getComponentType(), len);
+		T[] res = newNative(elementClass, len);
 		System.arraycopy(array, 0, res, 0, len);
 		return res;
 	}
@@ -29,5 +28,14 @@ public class Array<T> extends AbstractRandomAccessSequence<T>{
 	@Override
 	public String toString() {
 		return format("Array<{0}> length = {1}",array.getClass().getComponentType().getSimpleName(),array.length);
+	}
+	@SuppressWarnings("unchecked")
+	public Class<T> getElementClass() {
+		return (Class<T>) array.getClass().getComponentType();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] newNative(Class<T> clazz,int length){
+		return (T[]) java.lang.reflect.Array.newInstance(clazz, length);
 	}
 }

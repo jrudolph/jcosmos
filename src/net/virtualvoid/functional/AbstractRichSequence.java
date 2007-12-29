@@ -4,7 +4,6 @@ import static java.text.MessageFormat.format;
 import static net.virtualvoid.functional.Types.tuple;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,11 +12,12 @@ import java.util.concurrent.Future;
 import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Tuples.Tuple2;
+import net.virtualvoid.functional.mutable.Array;
 
 public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	@SuppressWarnings("unchecked")
-	public T[] asArray() {
-		T[] res = (T[])new Object[length()];
+	public T[] asArray(Class<T> elementClass) {
+		T[] res=Array.newNative(elementClass, length());
 		return withIndex().fold(new Function2<T[],Tuple2<Integer,T>,T[]>(){
 			public T[] apply(T[] array, Tuple2<Integer, T> arg2) {
 				int index = arg2.ele1();
@@ -42,6 +42,10 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				},start);
 			}
+			public Class<? super V> getElementClass() {
+				//func.getClass().getMethod("apply", AbstractRichSequence.this.getElementClass())
+				return Object.class; // can't be more specific since Function1 has no metadata
+			}
 		};
 	}
 	public ISequence<T> select(final Function1<? super T, Boolean> predicate) {
@@ -55,6 +59,9 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 							return start;
 					}
 				}, start);
+			}
+			public Class<? super T> getElementClass() {
+				return AbstractRichSequence.this.getElementClass();
 			}
 		};
 	}
@@ -70,6 +77,9 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				},tuple(0,start)).ele2();
 			}
+			public Class<? super Tuple2<Integer, T>> getElementClass() {
+				return Tuple2.class;
+			}
 		};
 	}
 	public ISequence<? extends ISequence<T>> partition(int parts){
@@ -79,7 +89,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	private final static ExecutorService executor = Executors.newFixedThreadPool(THREADS);
 	public T reduce(final Function2<? super T, ? super T, T> func, final T start) {
 		//return fold(func,start);
-		Object[] tasks = partition(THREADS).map(new Function1<ISequence<T>,Callable<T>>(){
+		Callable<T>[] tasks = partition(THREADS).map(new Function1<ISequence<T>,Callable<T>>(){
 			public Callable<T> apply(final ISequence<T> arg1) {
 				return new Callable<T>(){
 					public T call() throws Exception {
@@ -88,19 +98,19 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				};
 			}
-		}).asArray();
+		}).asArray((Class)Callable.class);
 		try {
 			return Sequences.fromIterable(
-					executor.invokeAll((Collection<Callable<T>>)(Collection)Arrays.asList(tasks)))
-					.fold(new Function2<T,Future<T>,T>(){
-						public T apply(T arg1, Future<T> arg2) {
-							try {
-								return func.apply(arg1, arg2.get());
-							} catch (Exception e) {
-								throw new Error(e);
+					executor.invokeAll(Arrays.asList(tasks)))
+						.fold(new Function2<T,Future<T>,T>(){
+							public T apply(T arg1, Future<T> arg2) {
+								try {
+									return func.apply(arg1, arg2.get());
+								} catch (Exception e) {
+									throw new Error(e);
+								}
 							}
-						}
-					}, start);
+						}, start);
 		} catch (InterruptedException e) {
 			throw new Error(e);
 		}

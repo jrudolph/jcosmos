@@ -16,6 +16,12 @@ public class Sequences {
 				}
 				return start;
 			}
+			// because class can't get less specific than the start
+			// element
+			@SuppressWarnings("unchecked")
+			public Class<? super T> getElementClass() {
+				return (Class<T>)outerStart.getClass();
+			}
 		};
 	}
 	public static IRandomAccessSequence<Integer> range(final Integer from, final int toExclusive){
@@ -30,6 +36,9 @@ public class Sequences {
 			@Override
 			public String toString() {
 				return format("({0,number};{1,number}]",from,from+toExclusive);
+			}
+			public Class<Integer> getElementClass() {
+				return Integer.class;
 			}
 		};
 	}
@@ -50,6 +59,10 @@ public class Sequences {
 			public String toString() {
 				return "[]";
 			}
+			@SuppressWarnings("unchecked")
+			public Class<? super T> getElementClass() {
+				return Object.class;
+			}
 		};
 	}
 	public static <T> ISequence<T> singleton(final T element){
@@ -65,6 +78,11 @@ public class Sequences {
 			public String toString() {
 				return format("[{0}]",element.toString());
 			}
+			// because can't get less specific than the one element
+			@SuppressWarnings("unchecked")
+			public Class<? super T> getElementClass() {
+				return (Class<T>) element.getClass();
+			}
 		};
 	}
 	public static <T> ISequence<T> fromIterable(final Iterable<T> it){
@@ -74,12 +92,18 @@ public class Sequences {
 					start = func.apply(start, ele);
 				return start;
 			}
+			public Class<? super T> getElementClass() {
+				return Object.class;
+			}
 		};
 	}
 	public static <T> ISequence<T> fromFoldable(final IFoldable<T> foldable){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
+			}
+			public Class<? super T> getElementClass() {
+				return foldable.getElementClass();
 			}
 		};
 	}
@@ -91,6 +115,9 @@ public class Sequences {
 			@Override
 			public int length() {
 				return accessable.length();
+			}
+			public Class<? super T> getElementClass() {
+				return accessable.getElementClass();
 			}
 		};
 	}

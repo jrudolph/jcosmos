@@ -16,6 +16,14 @@ public class LinkedList<T> extends AbstractRichSequence<T>{
 	private Entry<T> head;
 	private Entry<T> tail;
 
+	private final Class<T> elementType;
+	public LinkedList(Class<T> elementType) {
+		this.elementType = elementType;
+	}
+	public static <T> LinkedList<T> linkedListOf(Class<T> elementType){
+		return new LinkedList<T>(elementType);
+	}
+
 	public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 		if (head == null)
 			return start;
@@ -51,5 +59,8 @@ public class LinkedList<T> extends AbstractRichSequence<T>{
 			newOne.tail = head;
 			head = newOne;
 		}
+	}
+	public Class<? super T> getElementClass() {
+		return elementType;
 	}
 }

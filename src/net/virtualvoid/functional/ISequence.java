@@ -5,7 +5,7 @@ import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Tuples.Tuple2;
 
 public interface ISequence<T> extends IFoldable<T>{
-	T[] asArray();
+	T[] asArray(Class<T> elementClass);
 	int length();
 	ISequence<Tuple2<Integer,T>> withIndex();
 	<U> ISequence<U> map(Function1<? super T, U> func);

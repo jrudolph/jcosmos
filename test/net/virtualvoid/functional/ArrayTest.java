@@ -104,7 +104,7 @@ public class ArrayTest {
 	private Object[][]namedSeqs(){
 		return new Object[][]{
 			new Object[]{"Range [1,10)",Sequences.range(1, 10)}
-			,new Object[]{"Range [1,10000)",Sequences.range(1, 100000)}
+			,new Object[]{"Range [1,100000)",Sequences.range(1, 100000)}
 		};
 	}
 	@Test(dataProvider="namedSeqs")

@@ -35,7 +35,7 @@ public class Sequences {
 			}
 			@Override
 			public String toString() {
-				return format("({0,number};{1,number}]",from,from+toExclusive);
+				return format("[{0,number}..{1,number})",from,toExclusive);
 			}
 			public Class<Integer> getElementClass() {
 				return Integer.class;

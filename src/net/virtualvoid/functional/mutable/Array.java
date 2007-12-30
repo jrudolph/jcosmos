@@ -12,11 +12,15 @@ public class Array<T> extends AbstractRandomAccessSequence<T>{
 		return new Array<T>(els);
 	}
 	@Override
-	public T[] asArray(Class<T> elementClass) {
+	public T[] asNativeArray(Class<T> elementClass) {
 		int len = array.length;
 		T[] res = newNative(elementClass, len);
 		System.arraycopy(array, 0, res, 0, len);
 		return res;
+	}
+	@Override
+	public Array<T> asArray() {
+		return this;
 	}
 	@Override
 	public int length() {

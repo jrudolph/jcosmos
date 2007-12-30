@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 import static net.virtualvoid.functional.Types.tuple;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,7 +17,7 @@ import net.virtualvoid.functional.mutable.Array;
 
 public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	@SuppressWarnings("unchecked")
-	public T[] asArray(Class<T> elementClass) {
+	public T[] asNativeArray(Class<T> elementClass) {
 		T[] res=Array.newNative(elementClass, length());
 		return withIndex().fold(new Function2<T[],Tuple2<Integer,T>,T[]>(){
 			public T[] apply(T[] array, Tuple2<Integer, T> arg2) {
@@ -30,6 +31,11 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		},res);
 	}
+	@SuppressWarnings("unchecked")
+	public Array<T> asArray() {
+		return Array.instance(asNativeArray((Class)Object.class));
+	}
+
 	public int length() {
 		return fold(Integers.succ.withIgnoredArg(),0);
 	}
@@ -48,6 +54,16 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		};
 	}
+	static class FoundException extends Error{
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+		Object value;
+		public FoundException(Object value) {
+			this.value = value;
+		}
+	};
 	public ISequence<T> select(final Function1<? super T, Boolean> predicate) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(final Function2<? super U, ? super T, U> func, U start) {
@@ -62,6 +78,23 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 			public Class<? super T> getElementClass() {
 				return AbstractRichSequence.this.getElementClass();
+			}
+			@SuppressWarnings("unchecked")
+			@Override
+			public T first() {
+				try{
+					return fold(new Function2<T,T,T>(){
+						public T apply(T arg1, T arg2) {
+							if (arg2 != null)
+								throw new FoundException(arg2);
+							else
+								return null;
+						}
+					}, null);
+				}
+				catch(FoundException fe){
+					return (T)fe.value;
+				}
 			}
 		};
 	}
@@ -98,7 +131,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				};
 			}
-		}).asArray(new TypeRef<Callable<T>>(){}.clazz());
+		}).asNativeArray(new TypeRef<Callable<T>>(){}.clazz());
 		try {
 			return Sequences.fromIterable(
 					executor.invokeAll(Arrays.asList(tasks)))
@@ -114,5 +147,25 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 		} catch (InterruptedException e) {
 			throw new Error(e);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public Array<T> sort(Comparator<T> comparator) {
+		Object[] oa = asNativeArray((Class)Object.class);
+		Arrays.sort((T[])oa,comparator);
+		return new Array<T>((T[])oa);
+	}
+	public T first() {
+		return fold(Functions.<T>firstNotNullValue(),null);
+	}
+	public ISequence<T> join(final ISequence<? extends T> other) {
+		return new AbstractRichSequence<T>(){
+			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+				return other.fold(func, AbstractRichSequence.this.fold(func,start));
+			}
+			public Class<? super T> getElementClass() {
+				return AbstractRichSequence.this.getElementClass();
+			}
+		};
 	}
 }

@@ -114,4 +114,11 @@ public class Functions {
 			return apply((int)arg1,(int)arg2);
 		}
 	}
+	public final static <T> Function2<T,T,T> firstNotNullValue(){
+		return new Function2<T, T, T>(){
+			public T apply(T arg1, T arg2) {
+				return arg1 == null ? arg2 : arg1;
+			}
+		};
+	}
 }

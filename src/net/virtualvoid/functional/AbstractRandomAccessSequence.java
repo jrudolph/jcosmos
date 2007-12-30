@@ -75,4 +75,8 @@ public abstract class AbstractRandomAccessSequence<T>
 			}
 		};
 	}
+	@Override
+	public T first() {
+		return get(0);
+	}
 }

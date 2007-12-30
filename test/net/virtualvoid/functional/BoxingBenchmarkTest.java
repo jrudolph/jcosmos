@@ -185,19 +185,7 @@ public class BoxingBenchmarkTest {
 			}
 		};
 		final KnownPredicate kp = new KnownPredicate();
-		Benchmark.benchmarkAndReport(1000000,new BenchFunc("with known class"){
-			public Object apply() {
-				select(is,kp);
-				return null;
-			}
-		});
 		final KnownPredicate2 kp2 = new KnownPredicate2();
-		Benchmark.benchmarkAndReport(1000000,new BenchFunc("with known class with final method"){
-			public Object apply() {
-				select(is,kp2);
-				return null;
-			}
-		});
 		final GenPredicate<Integer> gp = new GenPredicate<Integer>(){
 			public boolean pred(Integer arg) {
 				return arg % 2 ==0;
@@ -215,7 +203,7 @@ public class BoxingBenchmarkTest {
 			}
 		};
 
-		Benchmark.shootout(1000000,new BenchFunc("raw w/ backward for loop"){
+		Benchmark.shootout(100000,new BenchFunc("raw w/ backward for loop"){
 			public Object apply() {
 				int []a = is;
 				int len = a.length-1;
@@ -311,6 +299,18 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		})
+		,new BenchFunc("with known class"){
+			public Object apply() {
+				select(is,kp);
+				return null;
+			}
+		}
+		,new BenchFunc("with known class with final method"){
+			public Object apply() {
+				select(is,kp2);
+				return null;
+			}
+		}
 		,new BenchFunc("with Function1"){
 			public Object apply() {
 				select(is,func);

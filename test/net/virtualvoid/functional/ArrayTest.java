@@ -75,13 +75,13 @@ public class ArrayTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testArrayPartition(){
-		ISequence<Integer>[] ar=array.partition(3).asArray((Class)ISequence.class);
+		ISequence<Integer>[] ar=array.partition(3).asNativeArray((Class)ISequence.class);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
 		assertEquals(2,ar[1].length());
 		assertEquals(2,ar[2].length());
 
-		ar=array.partition(4).asArray((Class)ISequence.class);
+		ar=array.partition(4).asNativeArray((Class)ISequence.class);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
 		assertEquals(2,ar[1].length());
@@ -132,6 +132,6 @@ public class ArrayTest {
 	}
 	@Test
 	public void testAsArray(){
-		assertEquals(Integer[].class,rangeSeq.asArray(Integer.class).getClass());
+		assertEquals(Integer[].class,rangeSeq.asNativeArray(Integer.class).getClass());
 	}
 }

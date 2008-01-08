@@ -3,7 +3,7 @@ package net.virtualvoid.functional;
 import net.virtualvoid.functional.Functions.Function1;
 
 public class Predicates {
-	static interface Predicate<T> extends Function1<T,Boolean>{
+	public static interface Predicate<T> extends Function1<T,Boolean>{
 		Predicate<T> and(Predicate<T> t2);
 		Predicate<T> inverse();
 		boolean predicate(T v);

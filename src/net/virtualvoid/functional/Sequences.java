@@ -50,7 +50,7 @@ public class Sequences {
 				return emptySequence();
 			}
 			@Override
-			public ISequence<T> select(Function1<? super T, Boolean> predicate) {
+			public ISequence<T> select(Predicate<? super T> predicate) {
 				return this;
 			}
 			@Override

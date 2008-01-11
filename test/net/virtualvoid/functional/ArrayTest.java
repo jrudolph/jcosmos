@@ -5,6 +5,8 @@ import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
+import net.virtualvoid.functional.Predicates.AbstractPredicate;
+import net.virtualvoid.functional.Predicates.Predicate;
 import net.virtualvoid.functional.mutable.Array;
 
 import org.testng.annotations.DataProvider;
@@ -24,9 +26,9 @@ public class ArrayTest {
 			}
 		};
 
-	public final static RichFunction1<Integer,Boolean> even =
-		new RichFunction1<Integer,Boolean>(){
-			public Boolean apply(Integer arg1) {
+	public final static Predicate<Integer> even =
+		new AbstractPredicate<Integer>(){
+			public boolean predicate(Integer arg1) {
 				return arg1 % 2 == 0;
 			}
 		};

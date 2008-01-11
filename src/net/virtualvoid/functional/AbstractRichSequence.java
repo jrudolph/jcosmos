@@ -14,6 +14,7 @@ import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
+import net.virtualvoid.functional.Predicates.Predicate;
 import net.virtualvoid.functional.Tuples.Tuple2;
 import net.virtualvoid.functional.mutable.Array;
 
@@ -65,12 +66,12 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			this.value = value;
 		}
 	};
-	public ISequence<T> select(final Function1<? super T, Boolean> predicate) {
+	public ISequence<T> select(final Predicate<? super T> predicate) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(final Function2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(){
 					public U apply(U start, T arg2) {
-						if (predicate.apply(arg2))
+						if (predicate.predicate(arg2))
 							return func.apply(start, arg2);
 						else
 							return start;

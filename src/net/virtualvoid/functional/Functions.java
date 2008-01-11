@@ -57,7 +57,7 @@ public class Functions {
 			if (resultType == null){
 				ISequence<Method> applyMs =
 					Array.instance(getClass().getMethods())
-						.select(getNameF.combineWith(Predicates.equalsP("apply")));
+						.select(Predicates.combine(getNameF,Predicates.equalsP("apply")));
 				resultType = (Class<ResT>) applyMs.first().getReturnType();
 			}
 			return resultType;

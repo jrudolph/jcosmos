@@ -13,6 +13,8 @@ import net.virtualvoid.functional.Functions.Function0;
 import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.IRichFunction2;
+import net.virtualvoid.functional.Functions.RichFunction0;
+import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
 import net.virtualvoid.functional.Tuples.Tuple2;
 import net.virtualvoid.functional.mutable.Array;
@@ -36,7 +38,12 @@ public class Benchmark {
 			}
 		};
 
-	public static abstract class BenchFunc implements Function0<Object>{
+	public static abstract class BenchFunc
+	extends RichFunction0<Object>{
+		@Override
+		public Class<Object> getResultType() {
+			return Object.class;
+		}
 		private final String name;
 
 		public BenchFunc(String name) {
@@ -99,7 +106,7 @@ public class Benchmark {
 					Tuple2.<String,Long>ele2F()
 					,Comparators.fromComparable(Long.class)));
 
-		Function1<Tuple2<String,Long>,String> labeler = new Function1<Tuple2<String,Long>,String>(){
+		Function1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(String.class){
 			public String apply(Tuple2<String, Long> arg1) {
 				long time = arg1.ele2();
 				double share = (double)time/referenceTime;
@@ -128,7 +135,7 @@ public class Benchmark {
 		}
 
 		Function1<Tuple2<String,Long>,String> csvLabeler =
-			new Function1<Tuple2<String,Long>,String>(){
+			new RichFunction1<Tuple2<String,Long>,String>(String.class){
 				public String apply(Tuple2<String, Long> arg1) {
 					return format("{2,date,short};{2,time,long};{0};{1}",arg1.ele1(),arg1.ele2(),now);
 				}

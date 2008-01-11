@@ -1,9 +1,10 @@
 package net.virtualvoid.functional;
 
 import static org.testng.AssertJUnit.assertEquals;
-import net.virtualvoid.functional.Functions.Function0;
 import net.virtualvoid.functional.Functions.Function2;
+import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
+import net.virtualvoid.functional.Functions.RichFunction2;
 import net.virtualvoid.functional.mutable.Array;
 
 import org.testng.annotations.DataProvider;
@@ -11,13 +12,13 @@ import org.testng.annotations.Test;
 
 public class ArrayTest {
 	public final static Function2<Integer,Integer,Integer> add =
-		new Function2<Integer,Integer,Integer>(){
+		new RichFunction2<Integer,Integer,Integer>(Integer.class){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 + arg2;
 			}
 		};
 	public final static Function2<Integer,Integer,Integer> mult =
-		new Function2<Integer,Integer,Integer>(){
+		new RichFunction2<Integer,Integer,Integer>(Integer.class){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 * arg2;
 			}
@@ -31,7 +32,7 @@ public class ArrayTest {
 		};
 
 	public static Function2<StringBuilder,String,StringBuilder> join(final String sep){
-		return new Function2<StringBuilder, String, StringBuilder>(){
+		return new RichFunction2<StringBuilder, String, StringBuilder>(StringBuilder.class){
 			public StringBuilder apply(StringBuilder arg1, String arg2) {
 				if (arg1.length() != 0)
 					arg1.append(sep);
@@ -88,7 +89,7 @@ public class ArrayTest {
 		assertEquals(2,ar[2].length());
 	}
 
-	private final Function2<String,String,String> stringConcat = new Function2<String,String,String>(){
+	private final Function2<String,String,String> stringConcat = new RichFunction2<String,String,String>(String.class){
 		public String apply(String arg1, String arg2) {
 			// this is expensive for the sake of it
 			return arg1 + arg2;
@@ -109,7 +110,7 @@ public class ArrayTest {
 	}
 	@Test(dataProvider="namedSeqs")
 	public void testReduceVsFoldTimes(final String art,final ISequence<Integer> seq){
-		Benchmark.shootout(1000, new Function0<Object>(){
+		Benchmark.shootout(1000, new RichFunction0<Object>(Object.class){
 				public Object apply() {
 					seq.fold (add, 0);
 					return null;
@@ -119,7 +120,7 @@ public class ArrayTest {
 					return "fold with" +art;
 				}
 			}
-			,new Function0<Object>(){
+			,new RichFunction0<Object>(Object.class){
 				public Object apply() {
 					seq.reduce(add);
 					return null;

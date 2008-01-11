@@ -60,7 +60,7 @@ public class LinkedList<T> extends AbstractRichSequence<T>{
 			head = newOne;
 		}
 	}*/
-	public Class<? super T> getElementClass() {
+	public Class<T> getElementClass() {
 		return elementType;
 	}
 }

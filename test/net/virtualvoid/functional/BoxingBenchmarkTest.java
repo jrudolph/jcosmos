@@ -1,9 +1,13 @@
 package net.virtualvoid.functional;
 
-import static java.text.MessageFormat.format;
+import java.text.MessageFormat;
+
 import net.virtualvoid.functional.Benchmark.BenchFunc;
 import net.virtualvoid.functional.Functions.Function0;
 import net.virtualvoid.functional.Functions.Function1;
+import net.virtualvoid.functional.Functions.RichFunction0;
+import net.virtualvoid.functional.Functions.RichFunction1;
+import net.virtualvoid.functional.Predicates.AbstractPredicate;
 
 import org.testng.annotations.Test;
 
@@ -116,13 +120,13 @@ public class BoxingBenchmarkTest {
 			return res;
 		}
 		public <ResT> Function0<ResT> withIntAllocatorFunction(final Function0<ResT> func){
-			return new Function0<ResT>(){
+			return new RichFunction0<ResT>(){
 				public ResT apply() {
 					return withIntAllocator(func);
 				}
 				@Override
 				public String toString() {
-					return format("IntAllocating {0}",func.toString());
+					return MessageFormat.format("IntAllocating {0}",func.toString());
 				}
 			};
 		}
@@ -164,8 +168,8 @@ public class BoxingBenchmarkTest {
 	public void benchmarkPredicatesRaw(){
 		final int []is = ints2(1000);
 		IntAllocator alloc = new IntAllocator();
-		final Function1<Number,Boolean> func2 = new Function1<Number,Boolean>(){
-			public Boolean apply(Number arg) {
+		final Function1<Number,Boolean> func2 = new AbstractPredicate<Number>(){
+			public boolean predicate(Number arg) {
 				return arg.intValue() % 2 == 0 ?Boolean.TRUE:Boolean.FALSE;
 			}
 		};
@@ -197,7 +201,7 @@ public class BoxingBenchmarkTest {
 			}
 		};
 
-		final Function1<Integer,Boolean> func = new Function1<Integer,Boolean>(){
+		final Function1<Integer,Boolean> func = new RichFunction1<Integer,Boolean>(Boolean.class){
 			public Boolean apply(Integer arg) {
 				return arg % 2 == 0;
 			}
@@ -221,6 +225,10 @@ public class BoxingBenchmarkTest {
 			@Override
 			public String toString() {
 				return "handcrafted jvm bytecodes";
+			}
+			@SuppressWarnings("unchecked")
+			public Class getResultType() {
+				return Object.class;
 			}
 		}
 		,alloc.withIntAllocatorFunction(new BenchFunc("Integer.valueOf of values 1 to 1000"){

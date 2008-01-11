@@ -25,7 +25,7 @@ public abstract class AbstractRandomAccessSequence<T>
 			public String toString() {
 				return format("Sublist[{0}..{1}) of {2}",from,from+length,AbstractRandomAccessSequence.this.toString());
 			}
-			public Class<? super T> getElementClass() {
+			public Class<T> getElementClass() {
 				return AbstractRandomAccessSequence.this.getElementClass();
 			}
 		};
@@ -54,8 +54,8 @@ public abstract class AbstractRandomAccessSequence<T>
 				}
 				return start;
 			}
-			public Class<? super ISequence<T>> getElementClass() {
-				return ISequence.class;
+			public Class<ISequence<T>> getElementClass() {
+				return new TypeRef<ISequence<T>>(){}.clazz();
 			}
 		};
 	}
@@ -69,9 +69,8 @@ public abstract class AbstractRandomAccessSequence<T>
 			public V get(int index) {
 				return func.apply(AbstractRandomAccessSequence.this.get(index));
 			}
-			public Class<? super V> getElementClass() {
-				// TODO: get metadata from func
-				return Object.class;
+			public Class<V> getElementClass() {
+				return func.getResultType();
 			}
 		};
 	}

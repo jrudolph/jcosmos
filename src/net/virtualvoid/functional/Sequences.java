@@ -16,10 +16,8 @@ public class Sequences {
 				}
 				return start;
 			}
-			// because class can't get less specific than the start
-			// element
 			@SuppressWarnings("unchecked")
-			public Class<? super T> getElementClass() {
+			public Class<T> getElementClass() {
 				return (Class<T>)outerStart.getClass();
 			}
 		};
@@ -60,8 +58,8 @@ public class Sequences {
 				return "[]";
 			}
 			@SuppressWarnings("unchecked")
-			public Class<? super T> getElementClass() {
-				return Object.class;
+			public Class<T> getElementClass() {
+				return (Class<T>) Object.class;
 			}
 		};
 	}
@@ -78,9 +76,8 @@ public class Sequences {
 			public String toString() {
 				return format("[{0}]",element.toString());
 			}
-			// because can't get less specific than the one element
 			@SuppressWarnings("unchecked")
-			public Class<? super T> getElementClass() {
+			public Class<T> getElementClass() {
 				return (Class<T>) element.getClass();
 			}
 		};
@@ -92,8 +89,10 @@ public class Sequences {
 					start = func.apply(start, ele);
 				return start;
 			}
-			public Class<? super T> getElementClass() {
-				return Object.class;
+			@SuppressWarnings("unchecked")
+			public Class<T> getElementClass() {
+				// since no metadata is available
+				return (Class<T>) Object.class;
 			}
 		};
 	}
@@ -102,7 +101,7 @@ public class Sequences {
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
 			}
-			public Class<? super T> getElementClass() {
+			public Class<T> getElementClass() {
 				return foldable.getElementClass();
 			}
 		};
@@ -116,7 +115,7 @@ public class Sequences {
 			public int length() {
 				return accessable.length();
 			}
-			public Class<? super T> getElementClass() {
+			public Class<T> getElementClass() {
 				return accessable.getElementClass();
 			}
 		};

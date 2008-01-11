@@ -1,5 +1,6 @@
 package net.virtualvoid.functional;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -15,6 +16,8 @@ public abstract class TypeRef<T> {
 			return (Class<T>) realType;
 		else if (realType instanceof TypeVariable<?>)
 			return (Class<T>) ((TypeVariable<?>)realType).getBounds()[0];
+		else if (realType instanceof GenericArrayType)
+			return (Class<T>) Object[].class;
 		else
 			return (Class<T>) ((ParameterizedType)realType).getRawType();
 	}

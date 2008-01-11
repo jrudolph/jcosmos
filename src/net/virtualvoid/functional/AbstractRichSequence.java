@@ -186,4 +186,24 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		};
 	}
+	public ISequence<T> prepend(final T first) {
+		return new AbstractRichSequence<T>(){
+			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+				return AbstractRichSequence.this.fold(func, func.apply(start,first));
+			}
+			public Class<? super T> getElementClass() {
+				return AbstractRichSequence.this.getElementClass();
+			}
+		};
+	}
+	public ISequence<T> append(final T last) {
+		return new AbstractRichSequence<T>(){
+			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+				return func.apply(AbstractRichSequence.this.fold(func,start),last);
+			}
+			public Class<? super T> getElementClass() {
+				return AbstractRichSequence.this.getElementClass();
+			}
+		};
+	}
 }

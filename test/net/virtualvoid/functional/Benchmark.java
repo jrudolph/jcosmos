@@ -135,7 +135,7 @@ public class Benchmark {
 			};
 		results
 			// add reference result
-			.join(Sequences.singleton(tuple(reference.toString(),referenceTime)))
+			.append(tuple(reference.toString(),referenceTime))
 			// label
 			.map(csvLabeler)
 			//print

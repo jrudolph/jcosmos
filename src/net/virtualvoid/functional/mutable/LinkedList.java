@@ -36,7 +36,7 @@ public class LinkedList<T> extends AbstractRichSequence<T>{
 		res.tail = null;
 		return res;
 	}
-	public void append(T ele){
+	/*public void append(T ele){
 		Entry<T> newOne = newEntry(ele);
 		if (head == null){
 			assert tail == null;
@@ -59,7 +59,7 @@ public class LinkedList<T> extends AbstractRichSequence<T>{
 			newOne.tail = head;
 			head = newOne;
 		}
-	}
+	}*/
 	public Class<? super T> getElementClass() {
 		return elementType;
 	}

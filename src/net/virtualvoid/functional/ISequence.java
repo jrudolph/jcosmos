@@ -19,4 +19,7 @@ public interface ISequence<T> extends IFoldable<T>{
 	Array<T> sort(Comparator<T> comparator);
 	T first();
 	ISequence<T> join(ISequence<? extends T> other);
+
+	ISequence<T> append(T last);
+	ISequence<T> prepend(T first);
 }

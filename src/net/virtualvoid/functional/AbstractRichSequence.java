@@ -118,32 +118,50 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	public ISequence<? extends ISequence<T>> partition(int parts){
 		return Sequences.singleton(this);
 	}
-	private final static int THREADS = 2;
+	@SuppressWarnings("unchecked")
+	public T reduce(final Function2<? super T, ? super T, T> func){
+		final Object starter = new Object();
+		return fold(new Function2<T,T,T>(){
+			public T apply(T arg1, T arg2) {
+				if (arg1 == starter)
+					return arg2;
+				else
+					return func.apply(arg1, arg2);
+			}
+		},(T)starter);
+	}
+
+	private final static int THREADS = Runtime.getRuntime().availableProcessors();
 	private final static ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-	public T reduce(final Function2<? super T, ? super T, T> func, final T start) {
-		//return fold(func,start);
+	private final static <T> Function1<Future<T>,T> futureResultF(){
+		return new Function1<Future<T>,T>(){
+			public T apply(Future<T> arg1) {
+				try {
+					return arg1.get();
+				} catch (Exception e) {
+					assert false;
+					throw new Error("This should be handled better?");
+				}
+			}
+		};
+	}
+
+	public T reduceThreaded(final Function2<? super T, ? super T, T> func) {
 		Callable<T>[] tasks = partition(THREADS).map(new Function1<ISequence<T>,Callable<T>>(){
 			public Callable<T> apply(final ISequence<T> arg1) {
 				return new Callable<T>(){
 					public T call() throws Exception {
-						T res = arg1.fold(func, start);
-						return res;
+						return arg1.reduce(func);
 					}
 				};
 			}
 		}).asNativeArray(new TypeRef<Callable<T>>(){}.clazz());
 		try {
-			return Sequences.fromIterable(
-					executor.invokeAll(Arrays.asList(tasks)))
-						.fold(new Function2<T,Future<T>,T>(){
-							public T apply(T arg1, Future<T> arg2) {
-								try {
-									return func.apply(arg1, arg2.get());
-								} catch (Exception e) {
-									throw new Error(e);
-								}
-							}
-						}, start);
+			return
+				Sequences.fromIterable(
+						executor.invokeAll(Arrays.asList(tasks)))
+					.map(AbstractRichSequence.<T>futureResultF())
+					.reduce(func);
 		} catch (InterruptedException e) {
 			throw new Error(e);
 		}

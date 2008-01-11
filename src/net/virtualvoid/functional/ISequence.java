@@ -14,7 +14,8 @@ public interface ISequence<T> extends IFoldable<T>{
 	ISequence<Tuple2<Integer,T>> withIndex();
 	<U> ISequence<U> map(Function1<? super T, U> func);
 	ISequence<T> select(Function1<? super T, Boolean> predicate);
-	T reduce(Function2<? super T,? super T,T> func,T start);
+	T reduce(Function2<? super T,? super T,T> func);
+	T reduceThreaded(Function2<? super T,? super T,T> func);
 	Array<T> sort(Comparator<T> comparator);
 	T first();
 	ISequence<T> join(ISequence<? extends T> other);

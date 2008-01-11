@@ -96,7 +96,7 @@ public class ArrayTest {
 	};
 	@Test
 	public void testReduce(){
-		Sequences.range(0, 10000).map(toStringF).reduce(stringConcat, "");
+		Sequences.range(0, 10000).map(toStringF).reduce(stringConcat);
 	}
 
 	@SuppressWarnings("unused") // referenced by name
@@ -121,7 +121,7 @@ public class ArrayTest {
 			}
 			,new Function0<Object>(){
 				public Object apply() {
-					seq.reduce(add, 0);
+					seq.reduce(add);
 					return null;
 				}
 				@Override

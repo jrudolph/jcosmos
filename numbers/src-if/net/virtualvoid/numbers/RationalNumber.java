@@ -20,13 +20,13 @@
 package net.virtualvoid.numbers;
 
 public interface RationalNumber extends Number{
-	public RationalNumber add(RationalNumber n2);
-	public RationalNumber mult(RationalNumber n2);
-	public RationalNumber div(RationalNumber n2);
-	public RationalNumber sub(RationalNumber n2);
+	RationalNumber add(RationalNumber n2);
+	RationalNumber mult(RationalNumber n2);
+	RationalNumber div(RationalNumber n2);
+	RationalNumber sub(RationalNumber n2);
 
-	public RationalNumber multInv();
-	public RationalNumber neg();
+	RationalNumber multInv();
+	RationalNumber neg();
 
 	long numerator();
 	long denominator();

@@ -19,10 +19,12 @@
 
 package net.virtualvoid.numbers;
 
+import net.virtualvoid.jcosmos.annotation.Export;
 import net.virtualvoid.numbers.Number;
 import net.virtualvoid.numbers.NumberImplementor;
 import net.virtualvoid.numbers.NumberMin;
 
+@Export
 public class RichNumberBridgeImpl implements NumberImplementor{
 	public Number newInstance(final NumberMin n) {
 		return new Number(){

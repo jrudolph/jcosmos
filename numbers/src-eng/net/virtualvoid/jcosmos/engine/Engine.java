@@ -19,8 +19,33 @@
 
 package net.virtualvoid.jcosmos.engine;
 
+import java.util.Arrays;
+
+import net.virtualvoid.jcosmos.Program;
+
 public class Engine {
 	public static void main(String[] args) {
+		if (args.length<1){
+			System.out.println("Usage: engine [classname]");
+			System.exit(1);
+		}
 
+		String className = args[0];
+		try {
+			Class<?> cl = Class.forName(className);
+
+			assert Program.class.isAssignableFrom(cl);
+
+			Program program = ((Program)cl.newInstance());
+			FactoryHelper.fillInImports(program);
+			program.main(args.length>1?
+					Arrays.copyOfRange(args, 1, args.length-1)
+					:new String[0]);
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class not found: "+className);
+			System.exit(1);
+		} catch (Exception e) {
+			throw new Error(e);
+		}
 	}
 }

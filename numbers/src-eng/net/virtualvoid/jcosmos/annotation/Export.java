@@ -17,31 +17,15 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid.numbers;
+package net.virtualvoid.jcosmos.annotation;
 
-import net.virtualvoid.numbers.NumberMin;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class DoubleNumberMinImpl implements NumberMin{
-	final double value;
-	DoubleNumberMinImpl(double d){
-		value=d;
-	}
-	protected NumberMin d(double d){
-		return new DoubleNumberMinImpl(d);
-	}
-	public NumberMin add(NumberMin n2) {
-		return d(value+n2.doubleValue());
-	}
-	public double doubleValue() {
-		return value;
-	}
-	public NumberMin mult(NumberMin n2) {
-		return d(value*n2.doubleValue());
-	}
-	public NumberMin multInv() {
-		return d(1./value);
-	}
-	public NumberMin neg() {
-		return d(-value);
-	}
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Export {
+
 }

@@ -19,12 +19,36 @@
 
 package net.virtualvoid.numbers;
 
-import net.virtualvoid.numbers.RationalNumber;
+import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
+import net.virtualvoid.numbers.DoubleNumberFactory;
+import net.virtualvoid.numbers.Number;
+import net.virtualvoid.numbers.NumberImplementor;
 import net.virtualvoid.numbers.RationalNumberFactory;
 
+@Export
 public class RationalNumberFactoryImpl implements RationalNumberFactory{
+	@Import
+	private NumberImplementor implementor;
+	@Import
+	private DoubleNumberFactory doubles;
+
 	@Override
-	public RationalNumber newInstance(long num, long denom) {
-		return RationalNumberImpl.fGekuerzt(num,denom);
+	public RationalNumberImpl newInstance(long num, long denom) {
+		long t = RationalNumberImpl.ggt(num,denom);
+		return new RationalNumberImpl(num/t,denom/t){
+			@Override
+			protected Number d(double d) {
+				return doubles.newInstance(d);
+			}
+			@Override
+			protected RationalNumberImpl f(long num, long denom) {
+				return newInstance(num,denom);
+			}
+			@Override
+			protected Number meFat() {
+				return implementor.newInstance(this);
+			}
+		};
 	}
 }

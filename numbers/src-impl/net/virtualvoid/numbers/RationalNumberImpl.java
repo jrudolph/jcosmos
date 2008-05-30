@@ -19,22 +19,21 @@
 
 package net.virtualvoid.numbers;
 
-import net.virtualvoid.jcosmos.engine.FactoryHelper;
-import net.virtualvoid.numbers.DoubleNumberFactory;
 import net.virtualvoid.numbers.Number;
-import net.virtualvoid.numbers.NumberImplementor;
 import net.virtualvoid.numbers.NumberMin;
 import net.virtualvoid.numbers.RationalNumber;
 
-public class RationalNumberImpl implements RationalNumber{
+public abstract class RationalNumberImpl implements RationalNumber{
 	private final long num;
 	private final long denom;
-	static DoubleNumberFactory factory = FactoryHelper.getFactory(DoubleNumberFactory.class);
+
+	protected abstract Number d(double d);
+
 	RationalNumberImpl(long num, long denom) {
 		this.num = num;
 		this.denom = denom;
 	}
-	private static long ggt(long n1,long n2){
+	static long ggt(long n1,long n2){
 	    long mod = n1 % n2;
 	    if (mod == 0)
 	    	return n2;
@@ -47,10 +46,11 @@ public class RationalNumberImpl implements RationalNumber{
 	public long numerator() {
 		return num;
 	}
-	static RationalNumberImpl f(long num,long denom){
+	protected abstract RationalNumberImpl f(long num,long denom);
+	/*{
 		return new RationalNumberImpl(num,denom);
-	}
-	static RationalNumberImpl fGekuerzt(long num,long denom){
+	}*/
+	private RationalNumberImpl fGekuerzt(long num,long denom){
 		long t=ggt(num,denom);
 		return f(num/t,denom/t);
 	}
@@ -58,7 +58,7 @@ public class RationalNumberImpl implements RationalNumber{
 		if (n2 instanceof RationalNumber)
 			return add((RationalNumber)n2);
 		else
-			return factory.newInstance(doubleValue()+n2.doubleValue());
+			return d(doubleValue()+n2.doubleValue());
 	}
 	public double doubleValue() {
 		return num/denom;
@@ -67,7 +67,7 @@ public class RationalNumberImpl implements RationalNumber{
 		if (n2 instanceof RationalNumber)
 			return mult((RationalNumber)n2);
 		else
-			return factory.newInstance(doubleValue()*n2.doubleValue());
+			return d(doubleValue()*n2.doubleValue());
 	}
 	public RationalNumber multInv() {
 		return f(denom,num);
@@ -84,10 +84,13 @@ public class RationalNumberImpl implements RationalNumber{
 		return fGekuerzt(num*r2.numerator(),denom*r2.denominator());
 	}
 
-	private static final NumberImplementor numbers = FactoryHelper.getFactory(NumberImplementor.class);
-	private Number meFat(){
+	protected abstract Number meFat();
+	/*	@Import
+	private NumberImplementor numbers;
+
+	 * {
 		return numbers.newInstance(this);
-	}
+	}*/
 
 	@Override
 	public RationalNumber sub(RationalNumber n2) {

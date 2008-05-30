@@ -20,16 +20,21 @@
 package net.virtualvoid.numbertest;
 
 import net.virtualvoid.jcosmos.Program;
-import net.virtualvoid.jcosmos.engine.FactoryHelper;
+import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
 import net.virtualvoid.numbers.DoubleNumberFactory;
 import net.virtualvoid.numbers.Number;
 import net.virtualvoid.numbers.RationalNumber;
 import net.virtualvoid.numbers.RationalNumberFactory;
 
+@Export
 public class Main implements Program{
-	private final static DoubleNumberFactory factory = FactoryHelper.getFactory(DoubleNumberFactory.class);
-	private final static RationalNumberFactory rs = FactoryHelper.getFactory(RationalNumberFactory.class);
-	private static Number d(double d){
+	@Import
+	private DoubleNumberFactory factory;
+	@Import
+	private RationalNumberFactory rs;
+
+	private Number d(double d){
 		return factory.newInstance(d);
 	}
 	public void main(String[] args) {

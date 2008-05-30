@@ -19,20 +19,17 @@
 
 package net.virtualvoid.numbers;
 
-import net.virtualvoid.jcosmos.engine.FactoryHelper;
-import net.virtualvoid.jcosmos.engine.LazyVal;
+import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
 import net.virtualvoid.numbers.DoubleNumberFactory;
 import net.virtualvoid.numbers.Number;
 import net.virtualvoid.numbers.NumberImplementor;
 
+@Export
 public class DoubleNumberFactoryImpl implements DoubleNumberFactory{
-	private final static LazyVal<NumberImplementor> implementor = new LazyVal<NumberImplementor>(){
-		@Override
-		protected NumberImplementor retrieve() {
-			return FactoryHelper.getFactory(NumberImplementor.class);
-		}
-	};
+	@Import
+	private NumberImplementor implementor;
 	public Number newInstance(double d) {
-		return implementor.get().newInstance(new DoubleNumberMinImpl(d));
+		return implementor.newInstance(new DoubleNumberMinImpl(d));
 	}
 }

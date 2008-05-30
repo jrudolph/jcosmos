@@ -56,6 +56,9 @@ public class FactoryHelper {
 		T res = clazz.cast(registry.get(clazz));
 		if (res == null){
 			if (registry.containsKey(clazz)){
+				// if object is expected but not yet loaded
+				// supply a proxy at least
+
 				return clazz.cast(Proxy.newProxyInstance(FactoryHelper.class.getClassLoader(), new Class<?>[]{clazz}, new InvocationHandler(){
 					@Override
 					public Object invoke(Object proxy, Method method,

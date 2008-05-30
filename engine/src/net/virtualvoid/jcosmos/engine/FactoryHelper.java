@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.virtualvoid.jcosmos.annotation.Import;
-import net.virtualvoid.numbers.DoubleNumberFactoryImpl;
-import net.virtualvoid.numbers.RationalNumberFactoryImpl;
-import net.virtualvoid.numbers.RichNumberBridgeImpl;
 
 public class FactoryHelper {
 	static Class<?>[] getExportedInterfaces(Object o){

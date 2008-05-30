@@ -17,12 +17,8 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
 
-public interface NumberMin {
-	NumberMin add(NumberMin n2);
-	NumberMin mult(NumberMin n2);
-	NumberMin neg();
-	NumberMin multInv();
-	double doubleValue();
+public interface NumberImplementor {
+	Number newInstance(NumberMin n);
 }

@@ -17,7 +17,11 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
+
+import net.virtualvoid.jcosmos.engine.FactoryHelper;
+import net.virtualvoid.numbers.DoubleNumberFactory;
+import net.virtualvoid.numbers.NumberMin;
 
 public class DoubleNumberMinImpl implements NumberMin{
 	final double value;

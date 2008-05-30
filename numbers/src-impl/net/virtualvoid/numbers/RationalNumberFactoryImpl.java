@@ -17,8 +17,14 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
 
-public interface RationalNumberFactory {
-	RationalNumber newInstance(long num,long denom);
+import net.virtualvoid.numbers.RationalNumber;
+import net.virtualvoid.numbers.RationalNumberFactory;
+
+public class RationalNumberFactoryImpl implements RationalNumberFactory{
+	@Override
+	public RationalNumber newInstance(long num, long denom) {
+		return RationalNumberImpl.fGekuerzt(num,denom);
+	}
 }

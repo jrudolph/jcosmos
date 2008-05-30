@@ -17,7 +17,14 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
+
+import net.virtualvoid.jcosmos.engine.FactoryHelper;
+import net.virtualvoid.numbers.DoubleNumberFactory;
+import net.virtualvoid.numbers.Number;
+import net.virtualvoid.numbers.NumberImplementor;
+import net.virtualvoid.numbers.NumberMin;
+import net.virtualvoid.numbers.RationalNumber;
 
 public class RationalNumberImpl implements RationalNumber{
 	private final long num;

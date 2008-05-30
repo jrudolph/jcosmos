@@ -17,8 +17,16 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
 
-public class Engine {
+package net.virtualvoid.numbers;
 
+public interface Number extends NumberMin{
+	Number add(NumberMin n2);
+	Number mult(NumberMin n2);
+	Number neg();
+	Number multInv();
+	double doubleValue();
+
+	Number sub(NumberMin n2);
+	Number div(NumberMin n2);
 }

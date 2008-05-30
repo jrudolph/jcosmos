@@ -17,17 +17,22 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.jcosmos.engine;
 
-public abstract class LazyVal<T> {
-	protected abstract T retrieve();
-	private T val=null;
-	boolean set=false;
-	public T get(){
-		if (!set){
-			val=retrieve();
-			set=true;
-		}
-		return val;
+import net.virtualvoid.numbers.DoubleNumberFactoryImpl;
+import net.virtualvoid.numbers.RationalNumberFactoryImpl;
+import net.virtualvoid.numbers.RichNumberBridgeImpl;
+
+public class FactoryHelper {
+	private final static Object []registry = {
+		new DoubleNumberFactoryImpl(),
+		new RichNumberBridgeImpl(),
+		new RationalNumberFactoryImpl()
+	};
+	public static <T> T getFactory(Class<T> clazz){
+		 for (Object o:registry)
+			 if (clazz.isInstance(o))
+				 return clazz.cast(o);
+		 throw new Error("Implementation not found");
 	}
 }

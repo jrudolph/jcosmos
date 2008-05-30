@@ -17,18 +17,12 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
 
-public class FactoryHelper {
-	private final static Object []registry = {
-		new DoubleNumberFactoryImpl(),
-		new RichNumberBridgeImpl(),
-		new RationalNumberFactoryImpl()
-	};
-	public static <T> T getFactory(Class<T> clazz){
-		 for (Object o:registry)
-			 if (clazz.isInstance(o))
-				 return clazz.cast(o);
-		 throw new Error("Implementation not found");
-	}
+public interface NumberMin {
+	NumberMin add(NumberMin n2);
+	NumberMin mult(NumberMin n2);
+	NumberMin neg();
+	NumberMin multInv();
+	double doubleValue();
 }

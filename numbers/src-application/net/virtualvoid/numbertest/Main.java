@@ -19,12 +19,12 @@
 
 package net.virtualvoid.numbertest;
 
-import net.virtualvoid.DoubleNumberFactory;
-import net.virtualvoid.FactoryHelper;
-import net.virtualvoid.Number;
-import net.virtualvoid.Program;
-import net.virtualvoid.RationalNumber;
-import net.virtualvoid.RationalNumberFactory;
+import net.virtualvoid.jcosmos.Program;
+import net.virtualvoid.jcosmos.engine.FactoryHelper;
+import net.virtualvoid.numbers.DoubleNumberFactory;
+import net.virtualvoid.numbers.Number;
+import net.virtualvoid.numbers.RationalNumber;
+import net.virtualvoid.numbers.RationalNumberFactory;
 
 public class Main implements Program{
 	private final static DoubleNumberFactory factory = FactoryHelper.getFactory(DoubleNumberFactory.class);

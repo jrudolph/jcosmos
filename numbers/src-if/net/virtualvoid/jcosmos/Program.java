@@ -17,17 +17,8 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.jcosmos;
 
-public interface RationalNumber extends Number{
-	public RationalNumber add(RationalNumber n2);
-	public RationalNumber mult(RationalNumber n2);
-	public RationalNumber div(RationalNumber n2);
-	public RationalNumber sub(RationalNumber n2);
-
-	public RationalNumber multInv();
-	public RationalNumber neg();
-
-	long numerator();
-	long denominator();
+public interface Program {
+	void main(String[] args);
 }

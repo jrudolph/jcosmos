@@ -17,8 +17,8 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
 
-public interface Program {
-	void main(String[] args);
+public interface RationalNumberFactory {
+	RationalNumber newInstance(long num,long denom);
 }

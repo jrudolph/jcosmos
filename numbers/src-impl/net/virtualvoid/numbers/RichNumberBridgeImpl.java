@@ -19,19 +19,34 @@
 
 package net.virtualvoid.numbers;
 
+import net.virtualvoid.numbers.Number;
+import net.virtualvoid.numbers.NumberImplementor;
 import net.virtualvoid.numbers.NumberMin;
 
-public class DoubleNumberInv {
-	boolean addInv(NumberMin recv,NumberMin arg1,NumberMin res){
-		return res.doubleValue() == recv.doubleValue() + arg1.doubleValue();
-	}
-	boolean multInv(NumberMin recv,NumberMin arg1,NumberMin res){
-		return res.doubleValue() == recv.doubleValue() * arg1.doubleValue();
-	}
-	boolean multInvInv(NumberMin recv,NumberMin res){
-		return res.doubleValue() == 1. / recv.doubleValue();
-	}
-	boolean negInv(NumberMin recv,NumberMin res){
-		return res.doubleValue() == -recv.doubleValue();
+public class RichNumberBridgeImpl implements NumberImplementor{
+	public Number newInstance(final NumberMin n) {
+		return new Number(){
+			public Number div(NumberMin n2) {
+				return newInstance(n.mult(n2.multInv()));
+			}
+			public Number sub(NumberMin n2) {
+				return newInstance(n.add(n2.neg()));
+			}
+			public Number add(NumberMin n2) {
+				return newInstance(n.add(n2));
+			}
+			public double doubleValue() {
+				return n.doubleValue();
+			}
+			public Number mult(NumberMin n2) {
+				return newInstance(n.mult(n2));
+			}
+			public Number multInv() {
+				return newInstance(n.multInv());
+			}
+			public Number neg() {
+				return newInstance(n.neg());
+			}
+		};
 	}
 }

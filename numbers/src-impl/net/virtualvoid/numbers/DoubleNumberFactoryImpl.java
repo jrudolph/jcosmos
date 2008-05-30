@@ -17,32 +17,22 @@
     Johannes Rudolph <johannes_rudolph@gmx.de>
 */
 
-package net.virtualvoid;
+package net.virtualvoid.numbers;
 
-public class RichNumberBridgeImpl implements NumberImplementor{
-	public Number newInstance(final NumberMin n) {
-		return new Number(){
-			public Number div(NumberMin n2) {
-				return newInstance(n.mult(n2.multInv()));
-			}
-			public Number sub(NumberMin n2) {
-				return newInstance(n.add(n2.neg()));
-			}
-			public Number add(NumberMin n2) {
-				return newInstance(n.add(n2));
-			}
-			public double doubleValue() {
-				return n.doubleValue();
-			}
-			public Number mult(NumberMin n2) {
-				return newInstance(n.mult(n2));
-			}
-			public Number multInv() {
-				return newInstance(n.multInv());
-			}
-			public Number neg() {
-				return newInstance(n.neg());
-			}
-		};
+import net.virtualvoid.jcosmos.engine.FactoryHelper;
+import net.virtualvoid.jcosmos.engine.LazyVal;
+import net.virtualvoid.numbers.DoubleNumberFactory;
+import net.virtualvoid.numbers.Number;
+import net.virtualvoid.numbers.NumberImplementor;
+
+public class DoubleNumberFactoryImpl implements DoubleNumberFactory{
+	private final static LazyVal<NumberImplementor> implementor = new LazyVal<NumberImplementor>(){
+		@Override
+		protected NumberImplementor retrieve() {
+			return FactoryHelper.getFactory(NumberImplementor.class);
+		}
+	};
+	public Number newInstance(double d) {
+		return implementor.get().newInstance(new DoubleNumberMinImpl(d));
 	}
 }

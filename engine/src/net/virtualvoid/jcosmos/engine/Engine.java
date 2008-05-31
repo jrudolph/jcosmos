@@ -19,24 +19,32 @@
 
 package net.virtualvoid.jcosmos.engine;
 
+import java.net.URL;
 import java.util.Arrays;
 
 import net.virtualvoid.jcosmos.Program;
 
 public class Engine {
+	static ClassLoader ifCl;
+	public static void setCl(ClassLoader ifCl){
+		Engine.ifCl=ifCl;
+	}
 	public static void main(String[] args) {
-		if (args.length<1){
-			System.out.println("Usage: engine [classname]");
+		if (args.length<2){
+			System.out.println("Usage: engine <classpath> <classname>");
 			System.exit(1);
 		}
 
-		String className = args[0];
+		String classPath = args[0];
+		String className = args[1];
 		try {
-			Class<?> cl = Class.forName(className);
+			VerboseCL cl = new VerboseCL("App",new URL[]{new URL("file:"+classPath)},ifCl);
 
-			assert Program.class.isAssignableFrom(cl);
+			Class<?> clazz = cl.loadClass(className);
 
-			Program program = ((Program)cl.newInstance());
+			assert Program.class.isAssignableFrom(clazz);
+
+			Program program = ((Program)clazz.newInstance());
 			FactoryHelper.fillInImports(program);
 			program.main(args.length>1?
 					Arrays.copyOfRange(args, 1, args.length-1)

@@ -36,9 +36,14 @@ public class VerboseCL extends URLClassLoader{
 	@Override
 	protected Class<?> findClass(String name)
 			throws ClassNotFoundException {
-		System.err.println("["+this.name+"] Trying to find: "+name);
+		//System.err.println("["+this.name+"] Trying to find: "+name);
 		Class<?> res = super.findClass(name);
-		System.err.println("["+this.name+"] Found "+name);
+		System.err.println("["+this.name+"] "+name);
 		return res;
+	}
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		System.out.println("Finalizing ["+name+"]");
 	}
 }

@@ -1,0 +1,36 @@
+/*
+ The contents of this file are subject to the Mozilla Public License
+ Version 1.1 (the "License"); you may not use this file except in
+ compliance with the License. You may obtain a copy of the License at
+ http://www.mozilla.org/MPL/
+
+ Software distributed under the License is distributed on an "AS IS"
+ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ License for the specific language governing rights and limitations
+ under the License.
+
+ The Initial Developer of the Original Code is Johannes Rudolph.
+ Portions created by the Initial Developer are Copyright (C) 2008
+ the Initial Developer. All Rights Reserved.
+
+ Contributor(s):
+    Johannes Rudolph <johannes_rudolph@gmx.de>
+*/
+
+package net.virtualvoid.crypto;
+
+public interface HashTools {
+	/**
+	 * Converts an array of bytes into the corresponding String representation
+	 * @param bs a array of bytes of length n
+	 * @return the bytes in hexadecimal representation with a length of n/2
+	 * and conforming to [a-f0-9]{<n/2>}
+	 */
+	String fromBytes(byte[] bs);
+	/**
+	 * The inverse function of fromBytes
+	 * @param str
+	 * @return
+	 */
+	byte[] toBytes(String str);
+}

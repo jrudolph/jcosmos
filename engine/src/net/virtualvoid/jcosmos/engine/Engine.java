@@ -19,9 +19,10 @@
 
 package net.virtualvoid.jcosmos.engine;
 
-import java.net.URL;
-import java.util.Arrays;
+import java.io.IOException;
 
+import net.virtualvoid.jcosmos.Implementation;
+import net.virtualvoid.jcosmos.ModulePolicy;
 import net.virtualvoid.jcosmos.Program;
 
 public class Engine {
@@ -29,31 +30,39 @@ public class Engine {
 	public static void setCl(ClassLoader ifCl){
 		Engine.ifCl=ifCl;
 	}
+	private static ModulePolicy byName(final String name){
+		return new ModulePolicy(){
+			public Implementation decide(Implementation[] impls) {
+				for(Implementation impl:impls)
+					if (impl.getModule().getName().equals(name))
+						return impl;
+				return null;
+			}
+		};
+	}
+
 	public static void main(String[] args) {
-		if (args.length<2){
-			System.out.println("Usage: engine <classpath> <classname>");
+		if (args.length<1){
+			System.out.println("Usage: engine <module> [<classname>]");
 			System.exit(1);
 		}
 
-		String classPath = args[0];
-		String className = args[1];
+		String module = args[0];
+		//String className = args[1];
 		try {
-			VerboseCL cl = new VerboseCL("App",new URL[]{new URL("file:"+classPath)},ifCl);
+			FactoryHelper.getFactory(Program.class, byName(module))
+				.main(new String[0]);
 
-			Class<?> clazz = cl.loadClass(className);
-
-			assert Program.class.isAssignableFrom(clazz);
-
-			Program program = ((Program)clazz.newInstance());
-			FactoryHelper.fillInImports(program);
-			program.main(args.length>1?
-					Arrays.copyOfRange(args, 1, args.length-1)
-					:new String[0]);
-		} catch (ClassNotFoundException e) {
-			System.out.println("Class not found: "+className);
-			System.exit(1);
+			System.in.read();
 		} catch (Exception e) {
 			throw new Error(e);
+		}
+		System.gc();
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

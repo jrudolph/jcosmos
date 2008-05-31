@@ -21,18 +21,22 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.virtualvoid.jcosmos.Implementation;
+import net.virtualvoid.jcosmos.Module;
+import net.virtualvoid.jcosmos.ModulePolicy;
+import net.virtualvoid.jcosmos.ModuleStorage;
+import net.virtualvoid.jcosmos.Repository;
 import net.virtualvoid.jcosmos.annotation.Import;
 
 public class FactoryHelper {
 	static Class<?>[] getExportedInterfaces(Object o){
 		return o.getClass().getInterfaces();
 	}
-	static class Implementation{
+	/*static class Implementation{
 		String ifName;
 		String implName;
 		public Implementation(String ifName, String implName) {
@@ -64,38 +68,37 @@ public class FactoryHelper {
 
 	private static Module getModule(String className){
 		return numbersModule;
-	}
+	}*/
+	private final static Repository repo = new SimpleRepository();
+	private final static ModulePolicy policy = new FirstModulePolicy();
+	private static ModuleStorage storage = new FileSystemStorage();
+
 	private static Map<Module,WeakReference<ClassLoader>> loadedModules =
 		new HashMap<Module, WeakReference<ClassLoader>>();
 
-	private static String getImplementationClass(Module m,String className){
-		for (Implementation impl:m.implementations)
-			if (impl.ifName.equals(className))
-				return impl.implName;
-		return null;
-	}
-	static Map<Class<?>,Object> registry = new HashMap<Class<?>, Object>();
+	static Map<Class<?>,WeakReference<Object>> registry = new HashMap<Class<?>, WeakReference<Object>>();
 
-	private static <T> T getFactory(final Class<T> clazz){
-		T res = clazz.cast(registry.get(clazz));
-		if (res == null){
-			Module module = getModule(clazz.getName());
+	static <T> T getFactory(final Class<T> clazz){
+		return getFactory(clazz,policy);
+	}
+	static <T> T getFactory(final Class<T> clazz,ModulePolicy policy){
+		WeakReference<Object> objectRef = registry.get(clazz);
+		T res;
+		if (objectRef==null||(res = clazz.cast(objectRef.get())) == null){
+			Implementation impl = policy.decide(repo.getImplementations(clazz));
+			Module module = impl.getModule();
 			WeakReference<ClassLoader> ref = loadedModules.get(module);
 
 			ClassLoader cl;
 			if (ref==null||(cl=ref.get())==null){
-				try {
-					cl = new VerboseCL(module.name,new URL[]{new URL(module.url)},Engine.ifCl);
-					loadedModules.put(module,new WeakReference<ClassLoader>(cl));
-				} catch (MalformedURLException e) {
-					throw new Error(e);
-				}
+				cl = new VerboseCL(module.getName(),new URL[]{storage.getModuleLocation(module.getId())},Engine.ifCl);
+				loadedModules.put(module,new WeakReference<ClassLoader>(cl));
 			}
 
 			try {
-				Class<?> implClazz = cl.loadClass(getImplementationClass(module, clazz.getName()));
+				Class<?> implClazz = cl.loadClass(impl.getImplementationClassName());
 				Object factory = implClazz.newInstance();
-				registry.put(clazz, factory);
+				registry.put(clazz, new WeakReference<Object>(factory));
 				fillInImports(factory);
 				return clazz.cast(factory);
 			} catch (Exception e) {

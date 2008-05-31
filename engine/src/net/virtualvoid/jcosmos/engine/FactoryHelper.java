@@ -21,9 +21,6 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -79,8 +76,6 @@ public class FactoryHelper {
 	}
 	static Map<Class<?>,Object> registry = new HashMap<Class<?>, Object>();
 
-	private static Object loading = new Object();
-
 	private static <T> T getFactory(final Class<T> clazz){
 		T res = clazz.cast(registry.get(clazz));
 		if (res == null){
@@ -100,24 +95,12 @@ public class FactoryHelper {
 			try {
 				Class<?> implClazz = cl.loadClass(getImplementationClass(module, clazz.getName()));
 				Object factory = implClazz.newInstance();
-				registry.put(clazz,loading);
-				fillInImports(factory);
 				registry.put(clazz, factory);
+				fillInImports(factory);
 				return clazz.cast(factory);
 			} catch (Exception e) {
 				throw new Error(e);
 			}
-		}
-		else if (res == loading){
-			return clazz.cast(Proxy.newProxyInstance(FactoryHelper.class.getClassLoader(), new Class<?>[]{clazz}, new InvocationHandler(){
-				public Object invoke(Object proxy, Method method,
-						Object[] args) throws Throwable {
-					T res = getFactory(clazz);
-					if (res == null)
-						throw new Error("should be initialized by now");
-					return method.invoke(res, args);
-				}
-			}));
 		}
 		else
 			return res;

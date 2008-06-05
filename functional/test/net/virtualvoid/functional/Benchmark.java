@@ -102,7 +102,7 @@ public class Benchmark {
 					Tuple2.<String,Long>ele2F()
 					,Comparators.fromComparable(Long.class)));
 
-		Function1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(String.class){
+		Function1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(){
 			public String apply(Tuple2<String, Long> arg1) {
 				long time = arg1.ele2();
 				double share = (double)time/referenceTime;
@@ -131,7 +131,7 @@ public class Benchmark {
 		}
 
 		Function1<Tuple2<String,Long>,String> csvLabeler =
-			new RichFunction1<Tuple2<String,Long>,String>(String.class){
+			new RichFunction1<Tuple2<String,Long>,String>(){
 				public String apply(Tuple2<String, Long> arg1) {
 					return format("{2,date,short};{2,time,long};{0};{1}",arg1.ele1(),arg1.ele2(),now);
 				}

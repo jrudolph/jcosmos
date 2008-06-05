@@ -22,7 +22,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	@SuppressWarnings("unchecked")
 	public T[] asNativeArray(Class<T> elementClass) {
 		T[] res=Array.newNative(elementClass, length());
-		return withIndex().fold(new RichFunction2<T[],Tuple2<Integer,T>,T[]>(new TypeRef<T[]>(){}.clazz()){
+		return withIndex().fold(new RichFunction2<T[],Tuple2<Integer,T>,T[]>(){
 			public T[] apply(T[] array, Tuple2<Integer, T> arg2) {
 				int index = arg2.ele1();
 
@@ -45,7 +45,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	public <V> Seq<V> map(final Function1<? super T, V> func) {
 		return new AbstractRichSequence<V>(){
 			public <U> U fold(final Function2<? super U, ? super V, U> foldFunc, U start) {
-				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(new TypeRef<U>(){}.clazz()){
+				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(){
 					public U apply(U start, T arg2) {
 						return foldFunc.apply(start,func.apply(arg2));
 					}
@@ -99,7 +99,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 			public <U> U fold(
 					final Function2<? super U, ? super Tuple2<Integer, T>, U> func,
 					U start) {
-				return AbstractRichSequence.this.fold(new RichFunction2<Tuple2<Integer,U>,T,Tuple2<Integer,U>>(new TypeRef<Tuple2<Integer,U>>(){}){
+				return AbstractRichSequence.this.fold(new RichFunction2<Tuple2<Integer,U>,T,Tuple2<Integer,U>>(){
 					public Tuple2<Integer,U> apply(Tuple2<Integer,U> arg1, T arg2) {
 						Integer index = arg1.ele1();
 						return tuple(index + 1,func.apply(arg1.ele2(), tuple(index,arg2)));
@@ -191,7 +191,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 		};
 	}
 	public void foreach(final Function1<? super T,?> func){
-		fold(new RichFunction2<Object,T,Object>(Object.class){
+		fold(new RichFunction2<Object,T,Object>(){
 			public Object apply(Object arg1, T arg2) {
 				func.apply(arg2);
 				return null;

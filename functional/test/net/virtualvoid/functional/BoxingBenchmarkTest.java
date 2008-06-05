@@ -201,7 +201,7 @@ public class BoxingBenchmarkTest {
 			}
 		};
 
-		final Function1<Integer,Boolean> func = new RichFunction1<Integer,Boolean>(Boolean.class){
+		final Function1<Integer,Boolean> func = new RichFunction1<Integer,Boolean>(){
 			public Boolean apply(Integer arg) {
 				return arg % 2 == 0;
 			}

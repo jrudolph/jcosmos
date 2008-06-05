@@ -1,6 +1,5 @@
 package net.virtualvoid.functional;
 
-import net.virtualvoid.functional.Functions.AbstractFunction;
 import net.virtualvoid.functional.Functions.Function1;
 
 public class Predicates {
@@ -11,11 +10,7 @@ public class Predicates {
 		<U> Predicate<U> ofChild(Function1<U,T> func);
 	};
 	public static abstract class AbstractPredicate<T>
-		extends AbstractFunction<Boolean>
 		implements Predicate<T> {
-		protected AbstractPredicate() {
-			super(Boolean.class);
-		}
 		public Predicate<T> and(final Predicate<T> pred2) {
 			final Predicate<T> outerThis = this;
 			return new AbstractPredicate<T>(){

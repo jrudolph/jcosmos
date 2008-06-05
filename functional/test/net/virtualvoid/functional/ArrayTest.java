@@ -14,13 +14,13 @@ import org.testng.annotations.Test;
 
 public class ArrayTest {
 	public final static Function2<Integer,Integer,Integer> add =
-		new RichFunction2<Integer,Integer,Integer>(Integer.class){
+		new RichFunction2<Integer,Integer,Integer>(){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 + arg2;
 			}
 		};
 	public final static Function2<Integer,Integer,Integer> mult =
-		new RichFunction2<Integer,Integer,Integer>(Integer.class){
+		new RichFunction2<Integer,Integer,Integer>(){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 * arg2;
 			}
@@ -34,7 +34,7 @@ public class ArrayTest {
 		};
 
 	public static Function2<StringBuilder,String,StringBuilder> join(final String sep){
-		return new RichFunction2<StringBuilder, String, StringBuilder>(StringBuilder.class){
+		return new RichFunction2<StringBuilder, String, StringBuilder>(){
 			public StringBuilder apply(StringBuilder arg1, String arg2) {
 				if (arg1.length() != 0)
 					arg1.append(sep);
@@ -91,7 +91,7 @@ public class ArrayTest {
 		assertEquals(2,ar[2].length());
 	}
 
-	private final Function2<String,String,String> stringConcat = new RichFunction2<String,String,String>(String.class){
+	private final Function2<String,String,String> stringConcat = new RichFunction2<String,String,String>(){
 		public String apply(String arg1, String arg2) {
 			// this is expensive for the sake of it
 			return arg1 + arg2;
@@ -112,7 +112,7 @@ public class ArrayTest {
 	}
 	@Test(dataProvider="namedSeqs")
 	public void testReduceVsFoldTimes(final String art,final Seq<Integer> seq){
-		Benchmark.shootout(1000, new RichFunction0<Object>(Object.class){
+		Benchmark.shootout(1000, new RichFunction0<Object>(){
 				public Object apply() {
 					seq.fold (add, 0);
 					return null;
@@ -122,7 +122,7 @@ public class ArrayTest {
 					return "fold with" +art;
 				}
 			}
-			,new RichFunction0<Object>(Object.class){
+			,new RichFunction0<Object>(){
 				public Object apply() {
 					seq.reduce(add);
 					return null;

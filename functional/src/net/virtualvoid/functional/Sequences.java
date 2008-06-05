@@ -120,4 +120,17 @@ public class Sequences {
 			}
 		};
 	}
+	public static <T> Function2<ISequence<T>,ISequence<T>,ISequence<T>> join(){
+		return new Function2<ISequence<T>,ISequence<T>,ISequence<T>>(){
+			@Override
+			public ISequence<T> apply(ISequence<T> arg1, ISequence<T> arg2) {
+				return arg1.join(arg2);
+			}
+			@SuppressWarnings("unchecked")
+			@Override
+			public Class<ISequence<T>> getResultType() {
+				return (Class) ISequence.class;
+			}
+		};
+	}
 }

@@ -217,20 +217,6 @@ public class BoxingBenchmarkTest {
 				return null;
 			}
 		}
-		,new Runner(){
-			@Override
-			public int[] is() {
-				return is;
-			}
-			@Override
-			public String toString() {
-				return "handcrafted jvm bytecodes";
-			}
-			@SuppressWarnings("unchecked")
-			public Class getResultType() {
-				return Object.class;
-			}
-		}
 		,alloc.withIntAllocatorFunction(new BenchFunc("Integer.valueOf of values 1 to 1000"){
 			public Object apply() {
 

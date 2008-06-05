@@ -36,39 +36,7 @@ public class FactoryHelper {
 	static Class<?>[] getExportedInterfaces(Object o){
 		return o.getClass().getInterfaces();
 	}
-	/*static class Implementation{
-		String ifName;
-		String implName;
-		public Implementation(String ifName, String implName) {
-			super();
-			this.ifName = ifName;
-			this.implName = implName;
-		}
-	}
-	static class Module{
-		String name;
-		String url;
-		Implementation[] implementations;
-	}
 
-	static Module numbersModule = new Module(){{
-		name="numbers";
-		url="file:../numbers/bin/";
-		implementations = new Implementation[]{
-				new Implementation(
-						"net.virtualvoid.numbers.DoubleNumberFactory"
-						,"net.virtualvoid.numbers.DoubleNumberFactoryImpl")
-				,new Implementation(
-						"net.virtualvoid.numbers.RationalNumberFactory"
-						,"net.virtualvoid.numbers.RationalNumberFactoryImpl")
-				,new Implementation(
-						"net.virtualvoid.numbers.NumberImplementor"
-						,"net.virtualvoid.numbers.RichNumberBridgeImpl")};
-	}};
-
-	private static Module getModule(String className){
-		return numbersModule;
-	}*/
 	private final static Repository repo = new SimpleRepository();
 	private final static ModulePolicy policy = new FirstModulePolicy();
 	private static ModuleStorage storage = new FileSystemStorage();

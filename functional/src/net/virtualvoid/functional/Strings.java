@@ -13,14 +13,14 @@ public class Strings {
 				return arg1.toString();
 			}
 		};
-	public static Function1<String,String> surroundWith(final String prefix,final String suffix){
+	public static F1<String,String> surroundWith(final String prefix,final String suffix){
 		return new RichFunction1<String,String>(){
 			public String apply(String arg1) {
 				return prefix + arg1 + suffix;
 			}
 		};
 	}
-	public static Function2<StringBuilder,String,StringBuilder> join(final String sep){
+	public static F2<StringBuilder,String,StringBuilder> join(final String sep){
 		return new RichFunction2<StringBuilder, String, StringBuilder>(){
 			public StringBuilder apply(StringBuilder arg1, String arg2) {
 				if (arg1.length() != 0)
@@ -30,7 +30,7 @@ public class Strings {
 			}
 		};
 	}
-	public static Function2<PrintStream,String,PrintStream> println =
+	public static F2<PrintStream,String,PrintStream> println =
 		new RichFunction2<PrintStream,String,PrintStream>(){
 			public PrintStream apply(PrintStream arg1, String arg2) {
 				arg1.println(arg2);

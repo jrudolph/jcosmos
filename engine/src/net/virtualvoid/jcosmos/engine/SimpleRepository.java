@@ -21,7 +21,7 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
 
-import net.virtualvoid.functional.Function1;
+import net.virtualvoid.functional.F1;
 import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Sequences;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
@@ -36,7 +36,7 @@ public class SimpleRepository implements Repository{
 	private static Extractor e = new SimpleExtractor();
 	private static ClassLocations l = new LocationFactory();
 
-	private static Function1<File, Module> file2module = new Function1<File,Module>(){
+	private static F1<File, Module> file2module = new F1<File,Module>(){
 		public Module apply(File arg1) {
 			return e.extract(l.fromFile(arg1));
 		}
@@ -62,11 +62,11 @@ public class SimpleRepository implements Repository{
 		};
 	}
 
-	private static <T,U> Seq<U> flatMap(Function1<T,Seq<U>> func,Seq<T> seq){
+	private static <T,U> Seq<U> flatMap(F1<T,Seq<U>> func,Seq<T> seq){
 		return seq.map(func).fold(Sequences.<U>join(), Sequences.<U>emptySequence());
 	}
 	public Implementation[] getImplementations(final Class<?> ifClass) {
-		return flatMap(new Function1<Module,Seq<Implementation>>(){
+		return flatMap(new F1<Module,Seq<Implementation>>(){
 				public Seq<Implementation> apply(Module arg1) {
 					return Array.instance(arg1.getExports())
 						.select(implementsIf(ifClass));

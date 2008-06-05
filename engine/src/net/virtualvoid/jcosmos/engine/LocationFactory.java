@@ -29,8 +29,8 @@ import java.net.URL;
 
 import net.virtualvoid.crypto.SHA1Hash;
 import net.virtualvoid.functional.AbstractRichSequence;
-import net.virtualvoid.functional.Function1;
-import net.virtualvoid.functional.Function2;
+import net.virtualvoid.functional.F1;
+import net.virtualvoid.functional.F2;
 import net.virtualvoid.functional.Seq;
 import net.virtualvoid.jcosmos.io.ClassLocation;
 import net.virtualvoid.jcosmos.io.ClassLocations;
@@ -49,7 +49,7 @@ public class LocationFactory implements ClassLocations{
 	static Seq<File> files(final File dir,final FileFilter filter){
 		assert dir.isDirectory();
 		return new AbstractRichSequence<File>(){
-			public <U> U fold(Function2<? super U, ? super File, U> func,
+			public <U> U fold(F2<? super U, ? super File, U> func,
 					U start) {
 				for (File f:dir.listFiles(filter))
 					start = func.apply(start, f);
@@ -70,7 +70,7 @@ public class LocationFactory implements ClassLocations{
 		try {
 			final ClassLoader cl = new VerboseCL("enumeratorHelper",new URL[]{new URL("file:"+dir.getAbsolutePath()+"/")},Engine.ifCl);
 			return files(dir,classFiles)
-				.map(new Function1<File,Class<?>>(){
+				.map(new F1<File,Class<?>>(){
 					public Class<?> apply(File arg1) {
 						try {
 							String name = subtractFromFront(arg1.getCanonicalPath(),dir.getCanonicalPath()+"/");

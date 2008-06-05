@@ -12,13 +12,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class ArrayTest {
-	public final static Function2<Integer,Integer,Integer> add =
+	public final static F2<Integer,Integer,Integer> add =
 		new RichFunction2<Integer,Integer,Integer>(){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 + arg2;
 			}
 		};
-	public final static Function2<Integer,Integer,Integer> mult =
+	public final static F2<Integer,Integer,Integer> mult =
 		new RichFunction2<Integer,Integer,Integer>(){
 			public Integer apply(Integer arg1, Integer arg2) {
 				return arg1 * arg2;
@@ -32,7 +32,7 @@ public class ArrayTest {
 			}
 		};
 
-	public static Function2<StringBuilder,String,StringBuilder> join(final String sep){
+	public static F2<StringBuilder,String,StringBuilder> join(final String sep){
 		return new RichFunction2<StringBuilder, String, StringBuilder>(){
 			public StringBuilder apply(StringBuilder arg1, String arg2) {
 				if (arg1.length() != 0)
@@ -90,7 +90,7 @@ public class ArrayTest {
 		assertEquals(2,ar[2].length());
 	}
 
-	private final Function2<String,String,String> stringConcat = new RichFunction2<String,String,String>(){
+	private final F2<String,String,String> stringConcat = new RichFunction2<String,String,String>(){
 		public String apply(String arg1, String arg2) {
 			// this is expensive for the sake of it
 			return arg1 + arg2;

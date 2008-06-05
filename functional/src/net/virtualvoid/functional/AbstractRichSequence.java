@@ -40,9 +40,9 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	public int length() {
 		return fold(Integers.succ.withIgnoredArg(),0);
 	}
-	public <V> Seq<V> map(final Function1<? super T, V> func) {
+	public <V> Seq<V> map(final F1<? super T, V> func) {
 		return new AbstractRichSequence<V>(){
-			public <U> U fold(final Function2<? super U, ? super V, U> foldFunc, U start) {
+			public <U> U fold(final F2<? super U, ? super V, U> foldFunc, U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(){
 					public U apply(U start, T arg2) {
 						return foldFunc.apply(start,func.apply(arg2));
@@ -63,7 +63,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	};
 	public Seq<T> select(final Predicate<? super T> predicate) {
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(final Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(final F2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(){
 					public U apply(U start, T arg2) {
 						if (predicate.predicate(arg2))
@@ -95,7 +95,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	public Seq<Tuple2<Integer, T>> withIndex() {
 		return new AbstractRichSequence<Tuple2<Integer,T>>(){
 			public <U> U fold(
-					final Function2<? super U, ? super Tuple2<Integer, T>, U> func,
+					final F2<? super U, ? super Tuple2<Integer, T>, U> func,
 					U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<Tuple2<Integer,U>,T,Tuple2<Integer,U>>(){
 					public Tuple2<Integer,U> apply(Tuple2<Integer,U> arg1, T arg2) {
@@ -110,7 +110,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 		return Sequences.singleton(this);
 	}
 	@SuppressWarnings("unchecked")
-	public T reduce(final Function2<? super T, ? super T, T> func){
+	public T reduce(final F2<? super T, ? super T, T> func){
 		final Object starter = new Object();
 		return fold(new RichFunction2<T,T,T>(){
 			public T apply(T arg1, T arg2) {
@@ -124,7 +124,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 
 	private final static int THREADS = Runtime.getRuntime().availableProcessors();
 	private final static ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-	private final static <T> Function1<Future<T>,T> futureResultF(){
+	private final static <T> F1<Future<T>,T> futureResultF(){
 		return new RichFunction1<Future<T>,T>(){
 			public T apply(Future<T> arg1) {
 				try {
@@ -137,7 +137,7 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 		};
 	}
 
-	public T reduceThreaded(final Function2<? super T, ? super T, T> func) {
+	public T reduceThreaded(final F2<? super T, ? super T, T> func) {
 		Callable<T>[] tasks = partition(THREADS).map(new RichFunction1<Seq<T>,Callable<T>>(){
 			public Callable<T> apply(final Seq<T> arg1) {
 				return new Callable<T>(){
@@ -169,26 +169,26 @@ public abstract class AbstractRichSequence<T> implements Seq<T>{
 	}
 	public Seq<T> join(final Seq<? extends T> other) {
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return other.fold(func, AbstractRichSequence.this.fold(func,start));
 			}
 		};
 	}
 	public Seq<T> prepend(final T first) {
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(func, func.apply(start,first));
 			}
 		};
 	}
 	public Seq<T> append(final T last) {
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return func.apply(AbstractRichSequence.this.fold(func,start),last);
 			}
 		};
 	}
-	public void foreach(final Function1<? super T,?> func){
+	public void foreach(final F1<? super T,?> func){
 		fold(new RichFunction2<Object,T,Object>(){
 			public Object apply(Object arg1, T arg2) {
 				func.apply(arg2);

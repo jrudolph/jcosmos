@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.virtualvoid.crypto.SHA1Hash;
-import net.virtualvoid.functional.Function1;
+import net.virtualvoid.functional.F1;
 import net.virtualvoid.functional.Predicates;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;
@@ -46,7 +46,7 @@ public class SimpleExtractor implements Extractor{
 							return v.isAnnotationPresent(Export.class);
 						}
 					})
-					.map(new Function1<Class<?>,Implementation>(){
+					.map(new F1<Class<?>,Implementation>(){
 						public Implementation apply(final Class<?> arg1) {
 							final String name = arg1.getName();
 							final Class<?> ifClazz = arg1.getInterfaces()[0];

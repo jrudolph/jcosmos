@@ -73,12 +73,12 @@ public class BoxingBenchmarkTest {
 			if(p.pred(is[i]))
 				is[i] = -1;
 	}
-	public static void select(int []is,Function1<Integer,Boolean> p){
+	public static void select(int []is,F1<Integer,Boolean> p){
 		for(int i=is.length-1;i>=0;i--)
 			if(p.apply(is[i]))
 				is[i] = -1;
 	}
-	public static void selectWithAlloc(int []is,Function1<? super Number,Boolean> p){
+	public static void selectWithAlloc(int []is,F1<? super Number,Boolean> p){
 		for(int i=is.length-1;i>=0;i--)
 			if(p.apply(IntAllocator.alloc(is[i]))==Boolean.TRUE)
 				is[i] = -1;
@@ -103,7 +103,7 @@ public class BoxingBenchmarkTest {
 		MyInteger []alloced = new MyInteger[SIZE];
 		int allocIndex;
 
-		public <ResT>ResT withIntAllocator(Function0<ResT> func){
+		public <ResT>ResT withIntAllocator(F0<ResT> func){
 			//assert alloc.get() == null;
 			assert thisAlloc ==null;
 
@@ -117,7 +117,7 @@ public class BoxingBenchmarkTest {
 			thisAlloc=null;
 			return res;
 		}
-		public <ResT> Function0<ResT> withIntAllocatorFunction(final Function0<ResT> func){
+		public <ResT> F0<ResT> withIntAllocatorFunction(final F0<ResT> func){
 			return new RichFunction0<ResT>(){
 				public ResT apply() {
 					return withIntAllocator(func);
@@ -166,7 +166,7 @@ public class BoxingBenchmarkTest {
 	public void benchmarkPredicatesRaw(){
 		final int []is = ints2(1000);
 		IntAllocator alloc = new IntAllocator();
-		final Function1<Number,Boolean> func2 = new AbstractPredicate<Number>(){
+		final F1<Number,Boolean> func2 = new AbstractPredicate<Number>(){
 			public boolean predicate(Number arg) {
 				return arg.intValue() % 2 == 0 ?Boolean.TRUE:Boolean.FALSE;
 			}
@@ -199,7 +199,7 @@ public class BoxingBenchmarkTest {
 			}
 		};
 
-		final Function1<Integer,Boolean> func = new RichFunction1<Integer,Boolean>(){
+		final F1<Integer,Boolean> func = new RichFunction1<Integer,Boolean>(){
 			public Boolean apply(Integer arg) {
 				return arg % 2 == 0;
 			}

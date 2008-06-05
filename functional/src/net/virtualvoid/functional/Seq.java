@@ -11,11 +11,11 @@ public interface Seq<T> extends IFoldable<T>{
 	Array<T> asArray();
 	int length();
 	Seq<Tuple2<Integer,T>> withIndex();
-	<U> Seq<U> map(Function1<? super T, U> func);
-	void foreach(Function1<? super T,?> func);
+	<U> Seq<U> map(F1<? super T, U> func);
+	void foreach(F1<? super T,?> func);
 	Seq<T> select(Predicate<? super T> predicate);
-	T reduce(Function2<? super T,? super T,T> func);
-	T reduceThreaded(Function2<? super T,? super T,T> func);
+	T reduce(F2<? super T,? super T,T> func);
+	T reduceThreaded(F2<? super T,? super T,T> func);
 	Array<T> sort(Comparator<T> comparator);
 	T first();
 	Seq<T> join(Seq<? extends T> other);

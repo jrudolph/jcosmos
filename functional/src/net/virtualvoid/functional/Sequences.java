@@ -4,9 +4,9 @@ import static java.text.MessageFormat.format;
 import net.virtualvoid.functional.Predicates.Predicate;
 
 public class Sequences {
-	public static <T> Seq<T> unfold(final T outerStart,final Function1<? super T,T> succ,final Predicate<? super T> stopCondition){
+	public static <T> Seq<T> unfold(final T outerStart,final F1<? super T,T> succ,final Predicate<? super T> stopCondition){
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				T value = outerStart;
 				while(!stopCondition.predicate(value)){
 					start = func.apply(start, value);
@@ -33,11 +33,11 @@ public class Sequences {
 	}
 	public final static <T>Seq<T> emptySequence(){
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return start;
 			}
 			@Override
-			public <U> Seq<U> map(Function1<? super T, U> func) {
+			public <U> Seq<U> map(F1<? super T, U> func) {
 				return emptySequence();
 			}
 			@Override
@@ -52,7 +52,7 @@ public class Sequences {
 	}
 	public static <T> Seq<T> singleton(final T element){
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return func.apply(start, element);
 			}
 			@Override
@@ -67,7 +67,7 @@ public class Sequences {
 	}
 	public static <T> Seq<T> fromIterable(final Iterable<T> it){
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				for(T ele:it)
 					start = func.apply(start, ele);
 				return start;
@@ -76,7 +76,7 @@ public class Sequences {
 	}
 	public static <T> Seq<T> fromFoldable(final IFoldable<T> foldable){
 		return new AbstractRichSequence<T>(){
-			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
 			}
 		};
@@ -92,8 +92,8 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> Function2<Seq<T>,Seq<T>,Seq<T>> join(){
-		return new Function2<Seq<T>,Seq<T>,Seq<T>>(){
+	public static <T> F2<Seq<T>,Seq<T>,Seq<T>> join(){
+		return new F2<Seq<T>,Seq<T>,Seq<T>>(){
 			@Override
 			public Seq<T> apply(Seq<T> arg1, Seq<T> arg2) {
 				return arg1.join(arg2);

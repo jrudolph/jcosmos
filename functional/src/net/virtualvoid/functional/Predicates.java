@@ -2,11 +2,11 @@ package net.virtualvoid.functional;
 
 
 public class Predicates {
-	public static interface Predicate<T> extends Function1<T,Boolean>{
+	public static interface Predicate<T> extends F1<T,Boolean>{
 		Predicate<T> and(Predicate<T> t2);
 		Predicate<T> inverse();
 		boolean predicate(T v);
-		<U> Predicate<U> ofChild(Function1<U,T> func);
+		<U> Predicate<U> ofChild(F1<U,T> func);
 	};
 	public static abstract class AbstractPredicate<T>
 		implements Predicate<T> {
@@ -28,11 +28,11 @@ public class Predicates {
 		public final Boolean apply(T arg1) {
 			return predicate(arg1);
 		}
-		public <U> Predicate<U> ofChild(Function1<U, T> func) {
+		public <U> Predicate<U> ofChild(F1<U, T> func) {
 			return combine(func,this);
 		}
 	}
-	public static <T> Predicate<T> predicate(final Function1<T,Boolean> func){
+	public static <T> Predicate<T> predicate(final F1<T,Boolean> func){
 		return new AbstractPredicate<T>(){
 			public boolean predicate(T arg1) {
 				return func.apply(arg1);
@@ -46,7 +46,7 @@ public class Predicates {
 			}
 		};
 	}
-	public static <T,U> Predicate<T> combine(final Function1<T,U> func,final Predicate<? super U> pred){
+	public static <T,U> Predicate<T> combine(final F1<T,U> func,final Predicate<? super U> pred){
 		return new AbstractPredicate<T>(){
 			public boolean predicate(T u) {
 				return pred.predicate(func.apply(u));

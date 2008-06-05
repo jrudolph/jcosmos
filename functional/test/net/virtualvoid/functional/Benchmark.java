@@ -19,9 +19,9 @@ import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.functional.util.Comparators;
 
 public class Benchmark {
-	public static IRichFunction2<Integer,Function0<?>,Long> benchmark =
-		new RichFunction2<Integer, Function0<?>, Long>(){
-			public Long apply(Integer arg1, Function0<?> runner) {
+	public static IRichFunction2<Integer,F0<?>,Long> benchmark =
+		new RichFunction2<Integer, F0<?>, Long>(){
+			public Long apply(Integer arg1, F0<?> runner) {
 				System.out.println(format("Running {0}",runner.toString()));
 				int times = arg1;
 
@@ -51,11 +51,11 @@ public class Benchmark {
 		}
 	}
 
-	public static void benchmarkAndReport(String name,int times,Function0<?>runner){
+	public static void benchmarkAndReport(String name,int times,F0<?>runner){
 		long time = benchmark.apply(times,runner);
 		System.out.println(format("{0}: {1,number} ns = {2,number} ns/run",name,time,(double)time/times));
 	}
-	public static void benchmarkAndReport(int times,Function0<?>runner){
+	public static void benchmarkAndReport(int times,F0<?>runner){
 		benchmarkAndReport(runner.toString(),times, runner);
 	}
 	public static String shareNames(double p,String pos,String neg){
@@ -71,7 +71,7 @@ public class Benchmark {
 
 	};
 	@SuppressWarnings("unchecked")
-	private final static Function1<Long,Tuple2<Long,String>> durations =
+	private final static F1<Long,Tuple2<Long,String>> durations =
 		Comparators.rangeMap(tuple(365l * 24 * 60 * 60 * 1000 * 1000 * 1000,"Year"),
 				Array.instance(
 						tuple(7l * 24 * 60 * 60 * 1000 * 1000 * 1000,"Week")
@@ -87,8 +87,8 @@ public class Benchmark {
 		Tuple2<Long, String> entry = durations.apply(nanos);
 		return String.format("%5.1f %ss", (double)nanos/entry.ele1(),entry.ele2());
 	}
-	public static void shootout(int times,Function0<?>reference,Function0<?>...contrahents){
-		final IRichFunction1<Function0<?>, Long> bencher = benchmark.applyPartial(times);
+	public static void shootout(int times,F0<?>reference,F0<?>...contrahents){
+		final IRichFunction1<F0<?>, Long> bencher = benchmark.applyPartial(times);
 
 		final long referenceTime = bencher.apply(reference);
 
@@ -100,7 +100,7 @@ public class Benchmark {
 					Tuple2.<String,Long>ele2F()
 					,Comparators.fromComparable(Long.class)));
 
-		Function1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(){
+		F1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(){
 			public String apply(Tuple2<String, Long> arg1) {
 				long time = arg1.ele2();
 				double share = (double)time/referenceTime;
@@ -128,7 +128,7 @@ public class Benchmark {
 			throw new Error(e);
 		}
 
-		Function1<Tuple2<String,Long>,String> csvLabeler =
+		F1<Tuple2<String,Long>,String> csvLabeler =
 			new RichFunction1<Tuple2<String,Long>,String>(){
 				public String apply(Tuple2<String, Long> arg1) {
 					return format("{2,date,short};{2,time,long};{0};{1}",arg1.ele1(),arg1.ele2(),now);

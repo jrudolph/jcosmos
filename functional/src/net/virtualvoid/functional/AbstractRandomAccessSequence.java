@@ -25,7 +25,7 @@ public abstract class AbstractRandomAccessSequence<T>
 			}
 		};
 	}
-	public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
+	public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 		for(int i=0;i<length();i++)
 			start = func.apply(start, get(i));
 		return start;
@@ -37,7 +37,7 @@ public abstract class AbstractRandomAccessSequence<T>
 	public Seq<? extends Seq<T>> partition(final int parts) {
 		return new AbstractRichSequence<Seq<T>>(){
 			public <U> U fold(
-					Function2<? super U, ? super Seq<T>, U> func,
+					F2<? super U, ? super Seq<T>, U> func,
 					U start) {
 				int i = 0;
 				AbstractRandomAccessSequence<T> outerThis = AbstractRandomAccessSequence.this;
@@ -52,7 +52,7 @@ public abstract class AbstractRandomAccessSequence<T>
 		};
 	}
 	@Override
-	public <V> RASeq<V> map(final Function1<? super T, V> func) {
+	public <V> RASeq<V> map(final F1<? super T, V> func) {
 		return new AbstractRandomAccessSequence<V>(){
 			@Override
 			public int length() {

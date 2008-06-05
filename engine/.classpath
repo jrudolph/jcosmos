@@ -5,6 +5,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/interfaces"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/bootstrap"/>
 	<classpathentry kind="lib" path="/home/johannes/infonds/repository/shared/testng/testng-5.4-jdk15.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/functional"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -24,28 +24,36 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.virtualvoid.crypto.SHA1Hash;
-import net.virtualvoid.functional.Predicates;
-import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
 import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.PredicateMin;
+import net.virtualvoid.jcosmos.functional.v0.Predicates;
+import net.virtualvoid.jcosmos.functional.v0.Seqs;
 import net.virtualvoid.jcosmos.io.ClassLocation;
 
+@Export
 public class SimpleExtractor implements Extractor{
+	@Import
+	private Seqs Seqs;
+	@Import
+	private Predicates Predicates;
+
 	public Module extract(final ClassLocation url) {
 		return new Module(){
 			String name = SimpleExtractor.getName(url);
 
 			Module thisModule = this;
 			final Implementation[] impls =
-				Array.instance(url.getClasses())
-					.select(new Predicates.AbstractPredicate<Class<?>>(){
+				Seqs.array(url.getClasses())
+					.select(Predicates.predicate(new PredicateMin<Class<?>>(){
 						public boolean predicate(Class<?> v) {
 							return v.isAnnotationPresent(Export.class);
 						}
-					})
+					}))
 					.map(new F1<Class<?>,Implementation>(){
 						public Implementation apply(final Class<?> arg1) {
 							final String name = arg1.getName();

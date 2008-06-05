@@ -28,14 +28,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.virtualvoid.crypto.SHA1Hash;
-import net.virtualvoid.functional.AbstractRichSequence;
+import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Foldable;
 import net.virtualvoid.jcosmos.functional.v0.Seq;
+import net.virtualvoid.jcosmos.functional.v0.Seqs;
 import net.virtualvoid.jcosmos.io.ClassLocation;
 import net.virtualvoid.jcosmos.io.ClassLocations;
 
+@Export
 public class LocationFactory implements ClassLocations{
+	@Import
+	private Seqs Seqs;
 	private static FileFilter dirs = new FileFilter(){
 		public boolean accept(File pathname) {
 			return pathname.isDirectory();
@@ -46,9 +52,9 @@ public class LocationFactory implements ClassLocations{
 			return pathname.getName().endsWith(".class");
 		}
 	};
-	static Seq<File> files(final File dir,final FileFilter filter){
+	Seq<File> files(final File dir,final FileFilter filter){
 		assert dir.isDirectory();
-		return new AbstractRichSequence<File>(){
+		return Seqs.seq(new Foldable<File>(){
 			public <U> U fold(F2<? super U, ? super File, U> func,
 					U start) {
 				for (File f:dir.listFiles(filter))
@@ -57,16 +63,13 @@ public class LocationFactory implements ClassLocations{
 					start = files(f,filter).fold(func, start);
 				return start;
 			}
-			public Class<File> getElementClass() {
-				return File.class;
-			}
-		};
+		});
 	}
 	static String subtractFromFront(String str1,String str2){
 		assert str1.startsWith(str2);
 		return str1.substring(str2.length());
 	}
-	static Seq<Class<?>> classEnumerator(final File dir){
+	Seq<Class<?>> classEnumerator(final File dir){
 		try {
 			final ClassLoader cl = new VerboseCL("enumeratorHelper",new URL[]{new URL("file:"+dir.getAbsolutePath()+"/")},Engine.ifCl);
 			return files(dir,classFiles)

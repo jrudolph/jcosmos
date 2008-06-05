@@ -21,60 +21,69 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
 
-import net.virtualvoid.functional.Sequences;
-import net.virtualvoid.functional.Predicates.AbstractPredicate;
-import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.Repository;
+import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.annotation.Import;
 import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.PredicateMin;
+import net.virtualvoid.jcosmos.functional.v0.Predicates;
 import net.virtualvoid.jcosmos.functional.v0.Seq;
+import net.virtualvoid.jcosmos.functional.v0.Seqs;
 import net.virtualvoid.jcosmos.io.ClassLocations;
 
+@Export
 public class SimpleRepository implements Repository{
-	private static Extractor e = new SimpleExtractor();
-	private static ClassLocations l = new LocationFactory();
+	@Import	protected Seqs Seqs;
+	@Import protected static Predicates preds;
+	@Import	protected Extractor Extractor;
+	@Import	protected ClassLocations ClassLocations;
 
-	private static F1<File, Module> file2module = new F1<File,Module>(){
+	private final F1<File, Module> file2module = new F1<File,Module>(){
 		public Module apply(File arg1) {
-			return e.extract(l.fromFile(arg1));
-		}
-		public Class<Module> getResultType() {
-			return Module.class;
+			return Extractor.extract(ClassLocations.fromFile(arg1));
 		}
 	};
 
-	private static Seq<Module> modules = Array.instance(
-		new File("../numbers/bin")
-		,new File("../calc-app/bin"))
-			.map(file2module)
-			.asArray();
+	private final LazyVal<Seq<Module>> modules = new LazyVal<Seq<Module>>(){
+		@Override
+		protected net.virtualvoid.jcosmos.functional.v0.Seq<Module> retrieve() {
+			return Seqs.array(
+					new File("../numbers/bin")
+					,new File("../calc-app/bin"))
+						.map(file2module)
+						.asArray();
+		};
+	};
 
 	public Module[] getModules() {
-		return modules.asNativeArray(Module.class);
+		return modules.get().asNativeArray(Module.class);
 	}
-	private static AbstractPredicate<Implementation> implementsIf(final Class<?>ifClass){
-		return new AbstractPredicate<Implementation>(){
+
+	private static Predicate<Implementation> implementsIf(final Class<?>ifClass){
+		return preds.predicate(new PredicateMin<Implementation>(){
 			public boolean predicate(Implementation v) {
 				return ifClass.isAssignableFrom(v.getInterfaceClass());
 			}
-		};
+		});
 	}
 
-	private static <T,U> Seq<U> flatMap(F1<T,Seq<U>> func,Seq<T> seq){
-		return seq.map(func).fold(Sequences.<U>join(), Sequences.<U>emptySequence());
+	private <T,U> Seq<U> flatMap(F1<T,Seq<U>> func,Seq<T> seq){
+		return seq.map(func).fold(Seqs.<U>join(), Seqs.<U>emptySequence());
 	}
 	public Implementation[] getImplementations(final Class<?> ifClass) {
 		return flatMap(new F1<Module,Seq<Implementation>>(){
 				public Seq<Implementation> apply(Module arg1) {
-					return Array.instance(arg1.getExports())
+					return Seqs.array(arg1.getExports())
 						.select(implementsIf(ifClass));
 				}
 				public Class<Seq<Implementation>> getResultType() {
 					return (Class)Seq.class;
 				}
-			},modules)
+			},modules.get())
 			.asNativeArray(Implementation.class);
 	}
 }

@@ -25,29 +25,59 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.ModulePolicy;
 import net.virtualvoid.jcosmos.ModuleStorage;
 import net.virtualvoid.jcosmos.Repository;
 import net.virtualvoid.jcosmos.annotation.Import;
+import net.virtualvoid.jcosmos.functional.v0.Predicates;
+import net.virtualvoid.jcosmos.functional.v0.Seqs;
+import net.virtualvoid.jcosmos.io.ClassLocations;
 
 public class FactoryHelper {
 	static Class<?>[] getExportedInterfaces(Object o){
 		return o.getClass().getInterfaces();
 	}
 
-	private final static Repository repo = new SimpleRepository();
 	private final static ModulePolicy policy = new FirstModulePolicy();
 	private static ModuleStorage storage = new FileSystemStorage();
 
-	private static Map<Module,WeakReference<ClassLoader>> loadedModules =
+	Map<Module,WeakReference<ClassLoader>> loadedModules =
 		new HashMap<Module, WeakReference<ClassLoader>>();
 
-	static Map<Class<?>,WeakReference<Object>> registry = new HashMap<Class<?>, WeakReference<Object>>();
+	Map<Class<?>,WeakReference<Object>> registry = new HashMap<Class<?>, WeakReference<Object>>();
 
-	static <T> T getFactory(final Class<T> clazz){
-		return getFactory(clazz,policy);
+	Repository repo;
+
+	private static <T> WeakReference<T> ref(T val){
+		return new WeakReference<T>(val);
+	}
+	private <T> void register(Class<T> clazz,T obj){
+		registry.put((Class)clazz, (WeakReference)ref(obj));
+		fillInImports(obj);
+	}
+	void init(){
+		try {
+			ClassLoader preFunc = new VerboseCL("preliminaryFunctional",new URL[]{new URL("file:../functional/bin/")},Engine.ifCl);
+			register(Seqs.class,(Seqs)preFunc.loadClass("net.virtualvoid.functional.Sequences").newInstance());
+			register(Predicates.class,(Predicates)preFunc.loadClass("net.virtualvoid.functional.Predicates").newInstance());
+		} catch (Exception e) {
+			throw new Error(e);
+		}
+		register(ClassLocations.class, new LocationFactory());
+		register(Extractor.class, new SimpleExtractor());
+
+		repo = new SimpleRepository();
+		fillInImports(repo);
+	}
+
+	<T> T getFactory(final Class<T> clazz){
+		return getFactory(clazz,policy,repo);
+	}
+	<T> T getFactory(final Class<T> clazz,ModulePolicy policy){
+		return getFactory(clazz,policy,repo);
 	}
 	static class UnresolvedDependencyException extends RuntimeException{
 		Class<?> clazz;
@@ -61,7 +91,7 @@ public class FactoryHelper {
 			return "Couldn't find implementation for "+clazz.getName();
 		}
 	}
-	static <T> T getFactory(final Class<T> clazz,ModulePolicy policy){
+	<T> T getFactory(final Class<T> clazz,ModulePolicy policy,Repository repo){
 		WeakReference<Object> objectRef = registry.get(clazz);
 		T res;
 		if (objectRef==null||(res = clazz.cast(objectRef.get())) == null){
@@ -91,7 +121,7 @@ public class FactoryHelper {
 		else
 			return res;
 	}
-	public static Object fillInImports(Object o){
+	Object fillInImports(Object o){
 		for (Field f:o.getClass().getDeclaredFields()){
 			if (f.isAnnotationPresent(Import.class)){
 				try {

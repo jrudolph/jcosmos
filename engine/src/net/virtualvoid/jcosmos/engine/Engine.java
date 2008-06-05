@@ -42,6 +42,8 @@ public class Engine {
 	}
 
 	public static void main(String[] args) {
+		FactoryHelper fh = new FactoryHelper();
+		fh.init();
 		if (args.length<1){
 			System.out.println("Usage: engine <module> [<classname>]");
 			System.exit(1);
@@ -50,13 +52,14 @@ public class Engine {
 		String module = args[0];
 		//String className = args[1];
 		try {
-			FactoryHelper.getFactory(Program.class, byName(module))
+			fh.getFactory(Program.class, byName(module))
 				.main(new String[0]);
 
 			System.in.read();
 		} catch (Exception e) {
 			throw new Error(e);
 		}
+		fh=null;
 		System.gc();
 		try {
 			System.in.read();

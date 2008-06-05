@@ -19,6 +19,7 @@ import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.functional.util.Comparators;
 import net.virtualvoid.jcosmos.functional.v0.F0;
 import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.RASeq;
 import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public class Benchmark {
@@ -97,7 +98,7 @@ public class Benchmark {
 
 		// with closure syntax the following would be:
 		// map(f:Function0 => tuple(f.toString,(double)benchmark(times,f)/referenceTime))
-		Array<Tuple2<String, Long>> results = Array.instance(contrahents)
+		RASeq<Tuple2<String, Long>> results = Array.instance(contrahents)
 			.map(Functions.multiFunc(Strings.toStringF, bencher))
 			.sort(Comparators.byChild(
 					Tuple2Impl.<String,Long>ele2F()

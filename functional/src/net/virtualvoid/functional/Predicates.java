@@ -1,6 +1,7 @@
 package net.virtualvoid.functional;
 
 import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
 
 
 public class Predicates {

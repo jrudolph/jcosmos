@@ -21,7 +21,6 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
 
-import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Sequences;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
 import net.virtualvoid.functional.mutable.Array;
@@ -30,6 +29,7 @@ import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.Repository;
 import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.Seq;
 import net.virtualvoid.jcosmos.io.ClassLocations;
 
 public class SimpleRepository implements Repository{

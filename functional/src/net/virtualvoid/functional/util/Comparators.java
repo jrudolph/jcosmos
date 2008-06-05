@@ -2,14 +2,14 @@ package net.virtualvoid.functional.util;
 
 import java.util.Comparator;
 
-import net.virtualvoid.functional.Predicate;
 import net.virtualvoid.functional.Predicates;
-import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
 import net.virtualvoid.functional.Tuples.Tuple2Impl;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.Seq;
 import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public class Comparators {

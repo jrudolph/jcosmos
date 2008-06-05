@@ -15,6 +15,8 @@ import net.virtualvoid.functional.Functions.RichFunction2;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.Seq;
 import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public abstract class AbstractRichSequence<T> implements Seq<T>{

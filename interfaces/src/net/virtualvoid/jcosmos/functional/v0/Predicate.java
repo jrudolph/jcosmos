@@ -1,9 +1,8 @@
 /**
  *
  */
-package net.virtualvoid.functional;
+package net.virtualvoid.jcosmos.functional.v0;
 
-import net.virtualvoid.jcosmos.functional.v0.F1;
 
 public interface Predicate<T> extends F1<T,Boolean>{
 	Predicate<T> and(Predicate<T> t2);

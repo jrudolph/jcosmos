@@ -3,6 +3,11 @@ package net.virtualvoid.functional;
 import static java.text.MessageFormat.format;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Foldable;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.RASeq;
+import net.virtualvoid.jcosmos.functional.v0.RandomAccessable;
+import net.virtualvoid.jcosmos.functional.v0.Seq;
 
 public class Sequences {
 	public static <T> Seq<T> unfold(final T outerStart,final F1<? super T,T> succ,final Predicate<? super T> stopCondition){
@@ -75,14 +80,14 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> Seq<T> fromFoldable(final IFoldable<T> foldable){
+	public static <T> Seq<T> fromFoldable(final Foldable<T> foldable){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
 			}
 		};
 	}
-	public static <T> RASeq<T> fromRandomAccessable(final IRandomAccessable<T> accessable){
+	public static <T> RASeq<T> fromRandomAccessable(final RandomAccessable<T> accessable){
 		return new AbstractRandomAccessSequence<T>(){
 			public T get(int index) {
 				return accessable.get(index);

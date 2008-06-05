@@ -3,6 +3,7 @@ package net.virtualvoid.functional;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
+import net.virtualvoid.jcosmos.functional.v0.Predicate;
 
 public class Integers {
 	public final static IRichFunction1<Integer,Integer> succ =

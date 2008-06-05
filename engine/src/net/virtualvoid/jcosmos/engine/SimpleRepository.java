@@ -20,141 +20,36 @@
 package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
-import net.virtualvoid.crypto.SHA1Hash;
-import net.virtualvoid.functional.AbstractRichSequence;
 import net.virtualvoid.functional.ISequence;
-import net.virtualvoid.functional.Predicates;
 import net.virtualvoid.functional.Sequences;
 import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
 import net.virtualvoid.functional.mutable.Array;
+import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.Repository;
-import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.io.ClassLocations;
 
 public class SimpleRepository implements Repository{
-	private static FileFilter dirs = new FileFilter(){
-		public boolean accept(File pathname) {
-			return pathname.isDirectory();
+	private static Extractor e = new SimpleExtractor();
+	private static ClassLocations l = new LocationFactory();
+
+	private static Function1<File, Module> file2module = new Function1<File,Module>(){
+		public Module apply(File arg1) {
+			return e.extract(l.fromFile(arg1));
+		}
+		public Class<Module> getResultType() {
+			return Module.class;
 		}
 	};
-	static FileFilter classFiles = new FileFilter(){
-		public boolean accept(File pathname) {
-			return pathname.getName().endsWith(".class");
-		}
-	};
-	static ISequence<File> files(final File dir,final FileFilter filter){
-		assert dir.isDirectory();
-		return new AbstractRichSequence<File>(){
-			public <U> U fold(Function2<? super U, ? super File, U> func,
-					U start) {
-				for (File f:dir.listFiles(filter))
-					start = func.apply(start, f);
-				for (File f:dir.listFiles(dirs))
-					start = files(f,filter).fold(func, start);
-				return start;
-			}
-			public Class<File> getElementClass() {
-				return File.class;
-			}
-		};
-	}
-	static String subtractFromFront(String str1,String str2){
-		assert str1.startsWith(str2);
-		return str1.substring(str2.length());
-	}
-	static ISequence<Class<?>> classEnumerator(final File dir){
-		try {
-			final ClassLoader cl = new VerboseCL("enumeratorHelper",new URL[]{new URL("file:"+dir.getAbsolutePath()+"/")},Engine.ifCl);
-			return files(dir,classFiles)
-				.map(new Function1<File,Class<?>>(){
-					public Class<?> apply(File arg1) {
-						try {
-							String name = subtractFromFront(arg1.getCanonicalPath(),dir.getCanonicalPath()+"/");
-							name = name.replace(File.separatorChar, '.')
-								.replaceAll("\\.class$", "");
 
-							return cl.loadClass(name);
-						} catch (Exception e) {
-							throw new Error(e);
-						}
-					}
-					public Class<Class<?>> getResultType() {
-						return (Class) Class.class;
-					}
-				});
-		} catch (MalformedURLException e) {
-			throw new Error(e);
-		}
-	}
-	static Module fromFolder(final String name,final File dir){
-		return new Module(){
-			Module thisModule = this;
-			final Implementation[] impls = classEnumerator(dir)
-			.select(new Predicates.AbstractPredicate<Class<?>>(){
-				public boolean predicate(Class<?> v) {
-					return v.isAnnotationPresent(Export.class);
-				}
-			})
-			.map(new Function1<Class<?>,Implementation>(){
-				public Implementation apply(final Class<?> arg1) {
-					final String name = arg1.getName();
-					final Class<?> ifClazz = arg1.getInterfaces()[0];
-
-					return new Implementation(){
-						public String getImplementationClassName() {
-							return name;
-						}
-						public Class<?> getInterfaceClass() {
-							return ifClazz;
-						}
-						public Module getModule() {
-							return thisModule;
-						}
-					};
-				}
-				public Class<Implementation> getResultType() {
-					return Implementation.class;
-				}
-			})
-			.asNativeArray(Implementation.class);
-
-			public Implementation[] getExports() {
-				return impls;
-			}
-			public SHA1Hash getId() {
-				return new SHA1Hash(){
-					public String asString() {
-						try {
-							// TODO: that's cheating for now
-							// since it is not yet defined
-							// how sha1 of folders will work
-							return dir.getCanonicalPath();
-						} catch (IOException e) {
-							throw new Error(e);
-						}
-					}
-					public byte[] asBytes() {
-						return null;
-					}
-				};
-			}
-			public String getName() {
-				return name;
-			}
-		};
-	}
-
-	private static Array<Module> modules = Array.instance(
-		fromFolder("numbers", new File("../numbers/bin"))
-		,fromFolder("calc-test", new File("../calc-app/bin")));
+	private static ISequence<Module> modules = Array.instance(
+		new File("../numbers/bin")
+		,new File("../calc-app/bin"))
+			.map(file2module)
+			.asArray();
 
 	public Module[] getModules() {
 		return modules.asNativeArray(Module.class);

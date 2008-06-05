@@ -81,11 +81,26 @@ public class FactoryHelper {
 	static <T> T getFactory(final Class<T> clazz){
 		return getFactory(clazz,policy);
 	}
+	static class UnresolvedDependencyException extends RuntimeException{
+		Class<?> clazz;
+
+		public UnresolvedDependencyException(Class<?> clazz) {
+			super();
+			this.clazz = clazz;
+		}
+		@Override
+		public String getMessage() {
+			return "Couldn't find implementation for "+clazz.getName();
+		}
+	}
 	static <T> T getFactory(final Class<T> clazz,ModulePolicy policy){
 		WeakReference<Object> objectRef = registry.get(clazz);
 		T res;
 		if (objectRef==null||(res = clazz.cast(objectRef.get())) == null){
 			Implementation impl = policy.decide(repo.getImplementations(clazz));
+			if (impl == null)
+				throw new UnresolvedDependencyException(clazz);
+
 			Module module = impl.getModule();
 			WeakReference<ClassLoader> ref = loadedModules.get(module);
 

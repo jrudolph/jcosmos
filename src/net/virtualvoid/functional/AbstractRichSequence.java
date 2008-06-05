@@ -208,4 +208,12 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		};
 	}
+	public void foreach(final Function1<? super T,?> func){
+		fold(new RichFunction2<Object,T,Object>(Object.class){
+			public Object apply(Object arg1, T arg2) {
+				func.apply(arg2);
+				return null;
+			}
+		}, null);
+	}
 }

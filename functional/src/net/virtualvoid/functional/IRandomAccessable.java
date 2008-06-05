@@ -1,6 +1,6 @@
 package net.virtualvoid.functional;
 
-public interface IRandomAccessable<T> extends ITypedContainer<T>{
+public interface IRandomAccessable<T>{
 	T get(int index);
 	int length();
 }

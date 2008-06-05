@@ -40,10 +40,6 @@ public class Benchmark {
 
 	public static abstract class BenchFunc
 	extends RichFunction0<Object>{
-		@Override
-		public Class<Object> getResultType() {
-			return Object.class;
-		}
 		private final String name;
 
 		public BenchFunc(String name) {

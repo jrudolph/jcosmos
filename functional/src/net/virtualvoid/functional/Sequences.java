@@ -16,10 +16,6 @@ public class Sequences {
 				}
 				return start;
 			}
-			@SuppressWarnings("unchecked")
-			public Class<T> getElementClass() {
-				return (Class<T>)outerStart.getClass();
-			}
 		};
 	}
 	public static IRandomAccessSequence<Integer> range(final Integer from, final int toExclusive){
@@ -34,9 +30,6 @@ public class Sequences {
 			@Override
 			public String toString() {
 				return format("[{0,number}..{1,number})",from,toExclusive);
-			}
-			public Class<Integer> getElementClass() {
-				return Integer.class;
 			}
 		};
 	}
@@ -57,10 +50,6 @@ public class Sequences {
 			public String toString() {
 				return "[]";
 			}
-			@SuppressWarnings("unchecked")
-			public Class<T> getElementClass() {
-				return (Class<T>) Object.class;
-			}
 		};
 	}
 	public static <T> ISequence<T> singleton(final T element){
@@ -76,10 +65,6 @@ public class Sequences {
 			public String toString() {
 				return format("[{0}]",element.toString());
 			}
-			@SuppressWarnings("unchecked")
-			public Class<T> getElementClass() {
-				return (Class<T>) element.getClass();
-			}
 		};
 	}
 	public static <T> ISequence<T> fromIterable(final Iterable<T> it){
@@ -89,20 +74,12 @@ public class Sequences {
 					start = func.apply(start, ele);
 				return start;
 			}
-			@SuppressWarnings("unchecked")
-			public Class<T> getElementClass() {
-				// since no metadata is available
-				return (Class<T>) Object.class;
-			}
 		};
 	}
 	public static <T> ISequence<T> fromFoldable(final IFoldable<T> foldable){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
-			}
-			public Class<T> getElementClass() {
-				return foldable.getElementClass();
 			}
 		};
 	}
@@ -115,9 +92,6 @@ public class Sequences {
 			public int length() {
 				return accessable.length();
 			}
-			public Class<T> getElementClass() {
-				return accessable.getElementClass();
-			}
 		};
 	}
 	public static <T> Function2<ISequence<T>,ISequence<T>,ISequence<T>> join(){
@@ -125,11 +99,6 @@ public class Sequences {
 			@Override
 			public ISequence<T> apply(ISequence<T> arg1, ISequence<T> arg2) {
 				return arg1.join(arg2);
-			}
-			@SuppressWarnings("unchecked")
-			@Override
-			public Class<ISequence<T>> getResultType() {
-				return (Class) ISequence.class;
 			}
 		};
 	}

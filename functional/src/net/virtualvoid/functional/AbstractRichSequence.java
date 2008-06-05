@@ -51,9 +51,6 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 					}
 				},start);
 			}
-			public Class<V> getElementClass() {
-				return func.getResultType();
-			}
 		};
 	}
 	static class FoundException extends Error{
@@ -77,9 +74,6 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 							return start;
 					}
 				}, start);
-			}
-			public Class<T> getElementClass() {
-				return AbstractRichSequence.this.getElementClass();
 			}
 			@SuppressWarnings("unchecked")
 			@Override
@@ -111,9 +105,6 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 						return tuple(index + 1,func.apply(arg1.ele2(), tuple(index,arg2)));
 					}
 				},tuple(0,start)).ele2();
-			}
-			public Class<Tuple2<Integer, T>> getElementClass() {
-				return new TypeRef<Tuple2<Integer,T>>(){}.clazz();
 			}
 		};
 	}
@@ -183,9 +174,6 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return other.fold(func, AbstractRichSequence.this.fold(func,start));
 			}
-			public Class<T> getElementClass() {
-				return AbstractRichSequence.this.getElementClass();
-			}
 		};
 	}
 	public ISequence<T> prepend(final T first) {
@@ -193,18 +181,12 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(func, func.apply(start,first));
 			}
-			public Class<T> getElementClass() {
-				return AbstractRichSequence.this.getElementClass();
-			}
 		};
 	}
 	public ISequence<T> append(final T last) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return func.apply(AbstractRichSequence.this.fold(func,start),last);
-			}
-			public Class<T> getElementClass() {
-				return AbstractRichSequence.this.getElementClass();
 			}
 		};
 	}

@@ -1,13 +1,9 @@
 package net.virtualvoid.functional;
 
-import java.lang.reflect.Method;
-
 import net.virtualvoid.functional.Tuples.Tuple2;
-import net.virtualvoid.functional.mutable.Array;
 
 public class Functions {
 	public static interface Function<ResT> {
-		Class<ResT> getResultType();
 	}
 	public static interface Function0<ResT>
 		extends Function<ResT> {
@@ -45,22 +41,6 @@ public class Functions {
 		}
 		public AbstractFunction() {
 			this.resultType = null;
-		}
-		private final static IRichFunction1<Method,String> getNameF =
-			new RichFunction1<Method, String>(String.class){
-				public String apply(Method arg1) {
-					return arg1.getName();
-				}
-			};
-		@SuppressWarnings("unchecked")
-		public Class<ResT> getResultType() {
-			if (resultType == null){
-				ISequence<Method> applyMs =
-					Array.instance(getClass().getMethods())
-						.select(Predicates.combine(getNameF,Predicates.equalsP("apply")));
-				resultType = (Class<ResT>) applyMs.first().getReturnType();
-			}
-			return resultType;
 		}
 	}
 	public static abstract class RichFunction0<ResT>
@@ -104,7 +84,7 @@ public class Functions {
 		}
 		public <Res2T> IRichFunction1<Arg1T, Res2T> combineWith(
 				final Function1<? super ResT, Res2T> func) {
-			return new RichFunction1<Arg1T,Res2T>(func.getResultType()){
+			return new RichFunction1<Arg1T,Res2T>(){
 				public Res2T apply(Arg1T arg1) {
 					return func.apply(RichFunction1.this.apply(arg1));
 				}
@@ -158,7 +138,7 @@ public class Functions {
 		return (IRichFunction1<T, T>) identity;
 	}
 	public static <Arg1T,ResT> RichFunction1<Arg1T,ResT> rich(final Function1<Arg1T,ResT> func){
-		return new RichFunction1<Arg1T, ResT>(func.getResultType()){
+		return new RichFunction1<Arg1T, ResT>(){
 			public ResT apply(Arg1T arg1) {
 				return func.apply(arg1);
 			}

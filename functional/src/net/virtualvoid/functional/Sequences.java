@@ -1,7 +1,8 @@
 package net.virtualvoid.functional;
 
 import static java.text.MessageFormat.format;
-import net.virtualvoid.functional.Predicates.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
 
 public class Sequences {
 	public static <T> Seq<T> unfold(final T outerStart,final F1<? super T,T> succ,final Predicate<? super T> stopCondition){

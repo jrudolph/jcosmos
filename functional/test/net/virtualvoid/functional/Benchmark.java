@@ -14,9 +14,12 @@ import net.virtualvoid.functional.Functions.IRichFunction2;
 import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
-import net.virtualvoid.functional.Tuples.Tuple2;
+import net.virtualvoid.functional.Tuples.Tuple2Impl;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.functional.util.Comparators;
+import net.virtualvoid.jcosmos.functional.v0.F0;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public class Benchmark {
 	public static IRichFunction2<Integer,F0<?>,Long> benchmark =
@@ -97,7 +100,7 @@ public class Benchmark {
 		Array<Tuple2<String, Long>> results = Array.instance(contrahents)
 			.map(Functions.multiFunc(Strings.toStringF, bencher))
 			.sort(Comparators.byChild(
-					Tuple2.<String,Long>ele2F()
+					Tuple2Impl.<String,Long>ele2F()
 					,Comparators.fromComparable(Long.class)));
 
 		F1<Tuple2<String,Long>,String> labeler = new RichFunction1<Tuple2<String,Long>,String>(){

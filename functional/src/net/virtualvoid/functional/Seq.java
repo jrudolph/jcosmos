@@ -2,9 +2,10 @@ package net.virtualvoid.functional;
 
 import java.util.Comparator;
 
-import net.virtualvoid.functional.Predicates.Predicate;
-import net.virtualvoid.functional.Tuples.Tuple2;
 import net.virtualvoid.functional.mutable.Array;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public interface Seq<T> extends IFoldable<T>{
 	T[] asNativeArray(Class<T> elementClass);

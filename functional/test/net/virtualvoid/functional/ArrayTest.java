@@ -5,8 +5,8 @@ import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
-import net.virtualvoid.functional.Predicates.Predicate;
 import net.virtualvoid.functional.mutable.Array;
+import net.virtualvoid.jcosmos.functional.v0.F2;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;

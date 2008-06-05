@@ -1,13 +1,9 @@
 package net.virtualvoid.functional;
 
+import net.virtualvoid.jcosmos.functional.v0.F1;
+
 
 public class Predicates {
-	public static interface Predicate<T> extends F1<T,Boolean>{
-		Predicate<T> and(Predicate<T> t2);
-		Predicate<T> inverse();
-		boolean predicate(T v);
-		<U> Predicate<U> ofChild(F1<U,T> func);
-	};
 	public static abstract class AbstractPredicate<T>
 		implements Predicate<T> {
 		public Predicate<T> and(final Predicate<T> pred2) {

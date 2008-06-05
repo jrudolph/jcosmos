@@ -1,6 +1,8 @@
 package net.virtualvoid.functional;
 
 import static java.text.MessageFormat.format;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
 
 public abstract class AbstractRandomAccessSequence<T>
 	extends AbstractRichSequence<T>

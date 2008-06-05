@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
 
 public class Strings {
 	public final static IRichFunction1<Object,String> toStringF =

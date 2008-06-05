@@ -1,6 +1,9 @@
 package net.virtualvoid.functional;
 
-import net.virtualvoid.functional.Tuples.Tuple2;
+import net.virtualvoid.jcosmos.functional.v0.F0;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public class Functions {
 	public static interface IRichFunction0<ResT> extends F0<ResT>{

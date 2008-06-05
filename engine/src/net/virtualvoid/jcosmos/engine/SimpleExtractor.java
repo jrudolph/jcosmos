@@ -24,13 +24,13 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.virtualvoid.crypto.SHA1Hash;
-import net.virtualvoid.functional.F1;
 import net.virtualvoid.functional.Predicates;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;
 import net.virtualvoid.jcosmos.Module;
 import net.virtualvoid.jcosmos.annotation.Export;
+import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.io.ClassLocation;
 
 public class SimpleExtractor implements Extractor{

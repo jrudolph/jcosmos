@@ -2,14 +2,15 @@ package net.virtualvoid.functional.util;
 
 import java.util.Comparator;
 
-import net.virtualvoid.functional.F1;
-import net.virtualvoid.functional.F2;
-import net.virtualvoid.functional.Seq;
+import net.virtualvoid.functional.Predicate;
 import net.virtualvoid.functional.Predicates;
+import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
-import net.virtualvoid.functional.Predicates.Predicate;
-import net.virtualvoid.functional.Tuples.Tuple2;
+import net.virtualvoid.functional.Tuples.Tuple2Impl;
+import net.virtualvoid.jcosmos.functional.v0.F1;
+import net.virtualvoid.jcosmos.functional.v0.F2;
+import net.virtualvoid.jcosmos.functional.v0.Tuple2;
 
 public class Comparators {
 	public static <T extends Comparable<T>> Comparator<T> fromComparable(Class<T> clazz){
@@ -44,7 +45,7 @@ public class Comparators {
 		return new RichFunction1<T,Tuple2<T,U>>(){
 			public Tuple2<T,U> apply(T arg1) {
 				Tuple2<T,U> res = data.select(
-						Predicates.predicate(Tuple2.<T,U>ele1F().combineWith(lessThan(arg1))))
+						Predicates.predicate(Tuple2Impl.<T,U>ele1F().combineWith(lessThan(arg1))))
 					.first();
 				return res == null ? defaultValue : res;
 			}

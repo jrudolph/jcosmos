@@ -6,6 +6,8 @@ import net.virtualvoid.functional.Benchmark.BenchFunc;
 import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
+import net.virtualvoid.jcosmos.functional.v0.F0;
+import net.virtualvoid.jcosmos.functional.v0.F1;
 
 import org.testng.annotations.Test;
 

@@ -18,8 +18,10 @@
 */
 
 package net.virtualvoid.jcosmos.engine;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Enumeration;
 
 public class VerboseCL extends URLClassLoader{
 	public VerboseCL(String name,URL[] urls) {
@@ -33,17 +35,43 @@ public class VerboseCL extends URLClassLoader{
 
 	String name;
 
+	private void out(String format,Object...args){
+		System.out.println(String.format("[%s] %s",name,String.format(format,args)));
+	}
+
 	@Override
 	protected Class<?> findClass(String name)
 			throws ClassNotFoundException {
 		//System.err.println("["+this.name+"] Trying to find: "+name);
 		Class<?> res = super.findClass(name);
-		System.err.println("["+this.name+"] "+name);
+		out("loaded class %s",name);
 		return res;
 	}
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
-		System.out.println("Finalizing ["+name+"]");
+		out("Finalizing");
+	}
+
+	@Override
+	public URL findResource(String name) {
+		out("Trying to find %s",name);
+		URL res = super.findResource(name);
+		if (res!=null)
+			out("Found resource %s",name);
+		return res;
+	}
+	@Override
+	public URL getResource(String name) {
+		out("Trying to get %s",name);
+		URL res = super.getResource(name);
+		if (res != null)
+			out("got %s",name);
+		return res;
+	}
+	@Override
+	public Enumeration<URL> findResources(String name) throws IOException {
+		out("Trying to find Resources %s",name);
+		return super.findResources(name);
 	}
 }

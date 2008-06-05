@@ -50,9 +50,9 @@ public class ArrayTest {
 		}
 	};
 	private final static Array<Integer> array = Array.instance(1,2,3,4,5,6);
-	private final static ISequence<Integer> arraySublist = Array.instance(1,1,1,0,1,2,3,4,5,6,7,8).sublist(4,6);
-	private final static ISequence<Integer> rangeSeq = Sequences.range(1, 7);
-	private final static ISequence<Integer> rangeSeqSublist = Sequences.range(-6, 12).sublist(7,6);
+	private final static Seq<Integer> arraySublist = Array.instance(1,1,1,0,1,2,3,4,5,6,7,8).sublist(4,6);
+	private final static Seq<Integer> rangeSeq = Sequences.range(1, 7);
+	private final static Seq<Integer> rangeSeqSublist = Sequences.range(-6, 12).sublist(7,6);
 
 	@DataProvider
 	public Object[][]sequences(){
@@ -65,26 +65,26 @@ public class ArrayTest {
 	}
 
 	@Test(dataProvider = "sequences")
-	public void testFold(ISequence<Integer> numbers){
+	public void testFold(Seq<Integer> numbers){
 		int sum = numbers.fold(add, 0);
 		assertEquals(21,sum);
 	}
 	@Test(dataProvider = "sequences")
-	public void testSelect(ISequence<Integer> numbers){
-		ISequence<Integer> evenOnes = numbers.select(even);
+	public void testSelect(Seq<Integer> numbers){
+		Seq<Integer> evenOnes = numbers.select(even);
 		assertEquals(3,evenOnes.length());
 		assertEquals("2,4,6",evenOnes.map(toStringF).fold(join(","), new StringBuilder()).toString());
 	}
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testArrayPartition(){
-		ISequence<Integer>[] ar=array.partition(3).asNativeArray((Class)ISequence.class);
+		Seq<Integer>[] ar=array.partition(3).asNativeArray((Class)Seq.class);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
 		assertEquals(2,ar[1].length());
 		assertEquals(2,ar[2].length());
 
-		ar=array.partition(4).asNativeArray((Class)ISequence.class);
+		ar=array.partition(4).asNativeArray((Class)Seq.class);
 		assertEquals(3,ar.length);
 		assertEquals(2,ar[0].length());
 		assertEquals(2,ar[1].length());
@@ -111,7 +111,7 @@ public class ArrayTest {
 		};
 	}
 	@Test(dataProvider="namedSeqs")
-	public void testReduceVsFoldTimes(final String art,final ISequence<Integer> seq){
+	public void testReduceVsFoldTimes(final String art,final Seq<Integer> seq){
 		Benchmark.shootout(1000, new RichFunction0<Object>(Object.class){
 				public Object apply() {
 					seq.fold (add, 0);

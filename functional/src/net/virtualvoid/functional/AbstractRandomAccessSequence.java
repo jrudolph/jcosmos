@@ -6,9 +6,9 @@ import net.virtualvoid.functional.Functions.Function2;
 
 public abstract class AbstractRandomAccessSequence<T>
 	extends AbstractRichSequence<T>
-	implements IRandomAccessSequence<T>{
+	implements RASeq<T>{
 
-	public IRandomAccessSequence<T> sublist(final int from, final int length) {
+	public RASeq<T> sublist(final int from, final int length) {
 		assert from >= 0;
 		assert length > 0;
 		assert from + length <= length();
@@ -36,10 +36,10 @@ public abstract class AbstractRandomAccessSequence<T>
 	public abstract int length();
 
 	@Override
-	public ISequence<? extends ISequence<T>> partition(final int parts) {
-		return new AbstractRichSequence<ISequence<T>>(){
+	public Seq<? extends Seq<T>> partition(final int parts) {
+		return new AbstractRichSequence<Seq<T>>(){
 			public <U> U fold(
-					Function2<? super U, ? super ISequence<T>, U> func,
+					Function2<? super U, ? super Seq<T>, U> func,
 					U start) {
 				int i = 0;
 				AbstractRandomAccessSequence<T> outerThis = AbstractRandomAccessSequence.this;
@@ -54,7 +54,7 @@ public abstract class AbstractRandomAccessSequence<T>
 		};
 	}
 	@Override
-	public <V> IRandomAccessSequence<V> map(final Function1<? super T, V> func) {
+	public <V> RASeq<V> map(final Function1<? super T, V> func) {
 		return new AbstractRandomAccessSequence<V>(){
 			@Override
 			public int length() {

@@ -2,7 +2,7 @@ package net.virtualvoid.functional.util;
 
 import java.util.Comparator;
 
-import net.virtualvoid.functional.ISequence;
+import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Predicates;
 import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.Function2;
@@ -40,7 +40,7 @@ public class Comparators {
 			}
 		};
 	}
-	public static <T extends Comparable<T>,U> Function1<T,Tuple2<T,U>> rangeMap(final Tuple2<T,U> defaultValue,final ISequence<Tuple2<T,U>> data){
+	public static <T extends Comparable<T>,U> Function1<T,Tuple2<T,U>> rangeMap(final Tuple2<T,U> defaultValue,final Seq<Tuple2<T,U>> data){
 		return new RichFunction1<T,Tuple2<T,U>>(){
 			public Tuple2<T,U> apply(T arg1) {
 				Tuple2<T,U> res = data.select(

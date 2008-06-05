@@ -6,7 +6,7 @@ import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Predicates.Predicate;
 
 public class Sequences {
-	public static <T> ISequence<T> unfold(final T outerStart,final Function1<? super T,T> succ,final Predicate<? super T> stopCondition){
+	public static <T> Seq<T> unfold(final T outerStart,final Function1<? super T,T> succ,final Predicate<? super T> stopCondition){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				T value = outerStart;
@@ -18,7 +18,7 @@ public class Sequences {
 			}
 		};
 	}
-	public static IRandomAccessSequence<Integer> range(final Integer from, final int toExclusive){
+	public static RASeq<Integer> range(final Integer from, final int toExclusive){
 		return new AbstractRandomAccessSequence<Integer>(){
 			public Integer get(int index) {
 				return from + index;
@@ -33,17 +33,17 @@ public class Sequences {
 			}
 		};
 	}
-	public final static <T>ISequence<T> emptySequence(){
+	public final static <T>Seq<T> emptySequence(){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return start;
 			}
 			@Override
-			public <U> ISequence<U> map(Function1<? super T, U> func) {
+			public <U> Seq<U> map(Function1<? super T, U> func) {
 				return emptySequence();
 			}
 			@Override
-			public ISequence<T> select(Predicate<? super T> predicate) {
+			public Seq<T> select(Predicate<? super T> predicate) {
 				return this;
 			}
 			@Override
@@ -52,7 +52,7 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> ISequence<T> singleton(final T element){
+	public static <T> Seq<T> singleton(final T element){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return func.apply(start, element);
@@ -67,7 +67,7 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> ISequence<T> fromIterable(final Iterable<T> it){
+	public static <T> Seq<T> fromIterable(final Iterable<T> it){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				for(T ele:it)
@@ -76,14 +76,14 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> ISequence<T> fromFoldable(final IFoldable<T> foldable){
+	public static <T> Seq<T> fromFoldable(final IFoldable<T> foldable){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return foldable.fold(func, start);
 			}
 		};
 	}
-	public static <T> IRandomAccessSequence<T> fromRandomAccessable(final IRandomAccessable<T> accessable){
+	public static <T> RASeq<T> fromRandomAccessable(final IRandomAccessable<T> accessable){
 		return new AbstractRandomAccessSequence<T>(){
 			public T get(int index) {
 				return accessable.get(index);
@@ -94,10 +94,10 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> Function2<ISequence<T>,ISequence<T>,ISequence<T>> join(){
-		return new Function2<ISequence<T>,ISequence<T>,ISequence<T>>(){
+	public static <T> Function2<Seq<T>,Seq<T>,Seq<T>> join(){
+		return new Function2<Seq<T>,Seq<T>,Seq<T>>(){
 			@Override
-			public ISequence<T> apply(ISequence<T> arg1, ISequence<T> arg2) {
+			public Seq<T> apply(Seq<T> arg1, Seq<T> arg2) {
 				return arg1.join(arg2);
 			}
 		};

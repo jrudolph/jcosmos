@@ -18,7 +18,7 @@ import net.virtualvoid.functional.Predicates.Predicate;
 import net.virtualvoid.functional.Tuples.Tuple2;
 import net.virtualvoid.functional.mutable.Array;
 
-public abstract class AbstractRichSequence<T> implements ISequence<T>{
+public abstract class AbstractRichSequence<T> implements Seq<T>{
 	@SuppressWarnings("unchecked")
 	public T[] asNativeArray(Class<T> elementClass) {
 		T[] res=Array.newNative(elementClass, length());
@@ -42,7 +42,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	public int length() {
 		return fold(Integers.succ.withIgnoredArg(),0);
 	}
-	public <V> ISequence<V> map(final Function1<? super T, V> func) {
+	public <V> Seq<V> map(final Function1<? super T, V> func) {
 		return new AbstractRichSequence<V>(){
 			public <U> U fold(final Function2<? super U, ? super V, U> foldFunc, U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(new TypeRef<U>(){}.clazz()){
@@ -63,7 +63,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			this.value = value;
 		}
 	};
-	public ISequence<T> select(final Predicate<? super T> predicate) {
+	public Seq<T> select(final Predicate<? super T> predicate) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(final Function2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(new RichFunction2<U,T,U>(){
@@ -94,7 +94,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		};
 	}
-	public ISequence<Tuple2<Integer, T>> withIndex() {
+	public Seq<Tuple2<Integer, T>> withIndex() {
 		return new AbstractRichSequence<Tuple2<Integer,T>>(){
 			public <U> U fold(
 					final Function2<? super U, ? super Tuple2<Integer, T>, U> func,
@@ -108,7 +108,7 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 			}
 		};
 	}
-	public ISequence<? extends ISequence<T>> partition(int parts){
+	public Seq<? extends Seq<T>> partition(int parts){
 		return Sequences.singleton(this);
 	}
 	@SuppressWarnings("unchecked")
@@ -140,8 +140,8 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	}
 
 	public T reduceThreaded(final Function2<? super T, ? super T, T> func) {
-		Callable<T>[] tasks = partition(THREADS).map(new RichFunction1<ISequence<T>,Callable<T>>(){
-			public Callable<T> apply(final ISequence<T> arg1) {
+		Callable<T>[] tasks = partition(THREADS).map(new RichFunction1<Seq<T>,Callable<T>>(){
+			public Callable<T> apply(final Seq<T> arg1) {
 				return new Callable<T>(){
 					public T call() throws Exception {
 						return arg1.reduce(func);
@@ -169,21 +169,21 @@ public abstract class AbstractRichSequence<T> implements ISequence<T>{
 	public T first() {
 		return fold(Functions.<T>firstNotNullValue(),null);
 	}
-	public ISequence<T> join(final ISequence<? extends T> other) {
+	public Seq<T> join(final Seq<? extends T> other) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return other.fold(func, AbstractRichSequence.this.fold(func,start));
 			}
 		};
 	}
-	public ISequence<T> prepend(final T first) {
+	public Seq<T> prepend(final T first) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return AbstractRichSequence.this.fold(func, func.apply(start,first));
 			}
 		};
 	}
-	public ISequence<T> append(final T last) {
+	public Seq<T> append(final T last) {
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(Function2<? super U, ? super T, U> func, U start) {
 				return func.apply(AbstractRichSequence.this.fold(func,start),last);

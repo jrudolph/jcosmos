@@ -21,7 +21,7 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
 
-import net.virtualvoid.functional.ISequence;
+import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Sequences;
 import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
@@ -45,7 +45,7 @@ public class SimpleRepository implements Repository{
 		}
 	};
 
-	private static ISequence<Module> modules = Array.instance(
+	private static Seq<Module> modules = Array.instance(
 		new File("../numbers/bin")
 		,new File("../calc-app/bin"))
 			.map(file2module)
@@ -62,17 +62,17 @@ public class SimpleRepository implements Repository{
 		};
 	}
 
-	private static <T,U> ISequence<U> flatMap(Function1<T,ISequence<U>> func,ISequence<T> seq){
+	private static <T,U> Seq<U> flatMap(Function1<T,Seq<U>> func,Seq<T> seq){
 		return seq.map(func).fold(Sequences.<U>join(), Sequences.<U>emptySequence());
 	}
 	public Implementation[] getImplementations(final Class<?> ifClass) {
-		return flatMap(new Function1<Module,ISequence<Implementation>>(){
-				public ISequence<Implementation> apply(Module arg1) {
+		return flatMap(new Function1<Module,Seq<Implementation>>(){
+				public Seq<Implementation> apply(Module arg1) {
 					return Array.instance(arg1.getExports())
 						.select(implementsIf(ifClass));
 				}
-				public Class<ISequence<Implementation>> getResultType() {
-					return (Class)ISequence.class;
+				public Class<Seq<Implementation>> getResultType() {
+					return (Class)Seq.class;
 				}
 			},modules)
 			.asNativeArray(Implementation.class);

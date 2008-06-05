@@ -6,7 +6,7 @@ import net.virtualvoid.jcosmos.functional.v0.F2;
 import net.virtualvoid.jcosmos.functional.v0.Foldable;
 import net.virtualvoid.jcosmos.functional.v0.Predicate;
 import net.virtualvoid.jcosmos.functional.v0.RASeq;
-import net.virtualvoid.jcosmos.functional.v0.RandomAccessable;
+import net.virtualvoid.jcosmos.functional.v0.RandomAccessible;
 import net.virtualvoid.jcosmos.functional.v0.Seq;
 
 public class Sequences {
@@ -87,7 +87,7 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> RASeq<T> fromRandomAccessable(final RandomAccessable<T> accessable){
+	public static <T> RASeq<T> fromRandomAccessable(final RandomAccessible<T> accessable){
 		return new AbstractRandomAccessSequence<T>(){
 			public T get(int index) {
 				return accessable.get(index);

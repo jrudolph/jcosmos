@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import net.virtualvoid.crypto.SHA1Hash;
+import net.virtualvoid.functional.Function1;
 import net.virtualvoid.functional.Predicates;
-import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;
 import net.virtualvoid.jcosmos.Implementation;

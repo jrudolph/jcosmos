@@ -3,18 +3,6 @@ package net.virtualvoid.functional;
 import net.virtualvoid.functional.Tuples.Tuple2;
 
 public class Functions {
-	public static interface Function0<ResT> {
-		ResT apply();
-	}
-	public static interface Function1<Arg1T,ResT> {
-		ResT apply(Arg1T arg1);
-	}
-	public static interface Function2<Arg1T,Arg2T,ResT> {
-		ResT apply(Arg1T arg1,Arg2T arg2);
-	}
-	public static interface Function3<Arg1T,Arg2T,Arg3T,ResT> {
-		ResT apply(Arg1T arg1,Arg2T arg2,Arg3T arg3);
-	}
 	public static interface IRichFunction0<ResT> extends Function0<ResT>{
 		<Arg1T>IRichFunction1<Arg1T,ResT> withIgnoredArg();
 	}

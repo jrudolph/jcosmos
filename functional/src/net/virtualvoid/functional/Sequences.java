@@ -1,8 +1,6 @@
 package net.virtualvoid.functional;
 
 import static java.text.MessageFormat.format;
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Predicates.Predicate;
 
 public class Sequences {

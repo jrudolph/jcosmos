@@ -2,8 +2,6 @@ package net.virtualvoid.functional;
 
 import java.util.Comparator;
 
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Predicates.Predicate;
 import net.virtualvoid.functional.Tuples.Tuple2;
 import net.virtualvoid.functional.mutable.Array;

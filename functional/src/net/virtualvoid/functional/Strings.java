@@ -2,8 +2,6 @@ package net.virtualvoid.functional;
 
 import java.io.PrintStream;
 
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;

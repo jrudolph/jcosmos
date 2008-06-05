@@ -10,8 +10,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
 import net.virtualvoid.functional.Predicates.Predicate;

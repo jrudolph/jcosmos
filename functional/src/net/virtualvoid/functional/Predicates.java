@@ -1,6 +1,5 @@
 package net.virtualvoid.functional;
 
-import net.virtualvoid.functional.Functions.Function1;
 
 public class Predicates {
 	public static interface Predicate<T> extends Function1<T,Boolean>{

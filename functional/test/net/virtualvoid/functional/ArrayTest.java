@@ -1,7 +1,6 @@
 package net.virtualvoid.functional;
 
 import static org.testng.AssertJUnit.assertEquals;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;

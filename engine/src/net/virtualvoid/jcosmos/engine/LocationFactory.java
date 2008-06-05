@@ -29,9 +29,9 @@ import java.net.URL;
 
 import net.virtualvoid.crypto.SHA1Hash;
 import net.virtualvoid.functional.AbstractRichSequence;
+import net.virtualvoid.functional.Function1;
+import net.virtualvoid.functional.Function2;
 import net.virtualvoid.functional.Seq;
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.jcosmos.io.ClassLocation;
 import net.virtualvoid.jcosmos.io.ClassLocations;
 

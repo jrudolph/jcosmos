@@ -2,10 +2,10 @@ package net.virtualvoid.functional.util;
 
 import java.util.Comparator;
 
+import net.virtualvoid.functional.Function1;
+import net.virtualvoid.functional.Function2;
 import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Predicates;
-import net.virtualvoid.functional.Functions.Function1;
-import net.virtualvoid.functional.Functions.Function2;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
 import net.virtualvoid.functional.Predicates.Predicate;

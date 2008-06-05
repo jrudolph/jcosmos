@@ -9,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.Date;
 
-import net.virtualvoid.functional.Functions.Function0;
-import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.IRichFunction2;
 import net.virtualvoid.functional.Functions.RichFunction0;

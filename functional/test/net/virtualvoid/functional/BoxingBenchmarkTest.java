@@ -3,8 +3,6 @@ package net.virtualvoid.functional;
 import java.text.MessageFormat;
 
 import net.virtualvoid.functional.Benchmark.BenchFunc;
-import net.virtualvoid.functional.Functions.Function0;
-import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Functions.RichFunction0;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;

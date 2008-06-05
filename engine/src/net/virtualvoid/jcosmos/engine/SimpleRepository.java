@@ -21,9 +21,9 @@ package net.virtualvoid.jcosmos.engine;
 
 import java.io.File;
 
+import net.virtualvoid.functional.Function1;
 import net.virtualvoid.functional.Seq;
 import net.virtualvoid.functional.Sequences;
-import net.virtualvoid.functional.Functions.Function1;
 import net.virtualvoid.functional.Predicates.AbstractPredicate;
 import net.virtualvoid.functional.mutable.Array;
 import net.virtualvoid.jcosmos.Extractor;

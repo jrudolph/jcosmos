@@ -1,10 +1,12 @@
 package net.virtualvoid.functional;
 
+import net.virtualvoid.jcosmos.annotation.Export;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.Predicate;
+import net.virtualvoid.jcosmos.functional.v0.PredicateMin;
 
-
-public class Predicates {
+@Export
+public class Predicates implements net.virtualvoid.jcosmos.functional.v0.Predicates{
 	public static abstract class AbstractPredicate<T>
 		implements Predicate<T> {
 		public Predicate<T> and(final Predicate<T> pred2) {
@@ -47,6 +49,13 @@ public class Predicates {
 		return new AbstractPredicate<T>(){
 			public boolean predicate(T u) {
 				return pred.predicate(func.apply(u));
+			}
+		};
+	}
+	public <T> Predicate<T> predicate(final PredicateMin<T> pred) {
+		return new AbstractPredicate<T>(){
+			public boolean predicate(T v) {
+				return pred.predicate(v);
 			}
 		};
 	}

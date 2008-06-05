@@ -1,6 +1,8 @@
 package net.virtualvoid.functional;
 
 import static java.text.MessageFormat.format;
+import net.virtualvoid.functional.mutable.Array;
+import net.virtualvoid.jcosmos.annotation.Export;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
 import net.virtualvoid.jcosmos.functional.v0.Foldable;
@@ -8,8 +10,10 @@ import net.virtualvoid.jcosmos.functional.v0.Predicate;
 import net.virtualvoid.jcosmos.functional.v0.RASeq;
 import net.virtualvoid.jcosmos.functional.v0.RandomAccessible;
 import net.virtualvoid.jcosmos.functional.v0.Seq;
+import net.virtualvoid.jcosmos.functional.v0.Seqs;
 
-public class Sequences {
+@Export
+public class Sequences implements Seqs{
 	public static <T> Seq<T> unfold(final T outerStart,final F1<? super T,T> succ,final Predicate<? super T> stopCondition){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
@@ -37,14 +41,14 @@ public class Sequences {
 			}
 		};
 	}
-	public final static <T>Seq<T> emptySequence(){
+	public final static <T>Seq<T> getEmptySequence(){
 		return new AbstractRichSequence<T>(){
 			public <U> U fold(F2<? super U, ? super T, U> func, U start) {
 				return start;
 			}
 			@Override
 			public <U> Seq<U> map(F1<? super T, U> func) {
-				return emptySequence();
+				return getEmptySequence();
 			}
 			@Override
 			public Seq<T> select(Predicate<? super T> predicate) {
@@ -98,12 +102,28 @@ public class Sequences {
 			}
 		};
 	}
-	public static <T> F2<Seq<T>,Seq<T>,Seq<T>> join(){
-		return new F2<Seq<T>,Seq<T>,Seq<T>>(){
-			@Override
-			public Seq<T> apply(Seq<T> arg1, Seq<T> arg2) {
-				return arg1.join(arg2);
-			}
-		};
+
+	@SuppressWarnings("unchecked")
+	public static F2 joinSeqs =
+		new F2<Seq<Object>,Seq<Object>,Seq<Object>>(){
+		public Seq<Object> apply(Seq<Object> arg1, Seq<Object> arg2) {
+			return arg1.join(arg2);
+		}
+	};
+	public <T> Seq<T> array(T... els) {
+		return Array.instance(els);
+	}
+	public <T> Seq<T> emptySequence() {
+		return Sequences.getEmptySequence();
+	}
+	@SuppressWarnings("unchecked")
+	public <T> F2<Seq<T>, Seq<T>, Seq<T>> join() {
+		return joinSeqs;
+	}
+	public <T> RASeq<T> raseq(RandomAccessible<T> accessible) {
+		return fromRandomAccessable(accessible);
+	}
+	public <T> Seq<T> seq(Foldable<T> foldable) {
+		return fromFoldable(foldable);
 	}
 }

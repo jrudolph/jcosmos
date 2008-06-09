@@ -58,7 +58,7 @@ public class FactoryHelper {
 		registry.put((Class)clazz, (WeakReference)ref(obj));
 		fillInImports(obj);
 	}
-	void init(){
+	public void init(){
 		try {
 			ClassLoader preFunc = new VerboseCL("preliminaryFunctional",new URL[]{new URL("file:../functional/bin/")},Engine.ifCl);
 			Seqs Seqs=(Seqs)preFunc.loadClass("net.virtualvoid.functional.Sequences").newInstance();
@@ -101,7 +101,11 @@ public class FactoryHelper {
 		WeakReference<Object> objectRef = registry.get(clazz);
 		T res;
 		if (objectRef==null||(res = clazz.cast(objectRef.get())) == null){
-			Implementation impl = policy.decide(repo.getImplementations(clazz));
+			Implementation[] candidates = repo.getImplementations(clazz);
+			if (candidates.length < 1)
+				throw new Error("No candidates found for "+clazz.getSimpleName());
+
+			Implementation impl = policy.decide(candidates);
 			if (impl == null)
 				throw new UnresolvedDependencyException(clazz);
 
@@ -127,7 +131,7 @@ public class FactoryHelper {
 		else
 			return res;
 	}
-	Object fillInImports(Object o){
+	public Object fillInImports(Object o){
 		for (Field f:o.getClass().getDeclaredFields()){
 			if (f.isAnnotationPresent(Import.class)){
 				try {

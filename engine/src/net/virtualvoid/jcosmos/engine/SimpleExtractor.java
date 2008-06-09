@@ -59,6 +59,10 @@ public class SimpleExtractor implements Extractor{
 							final String name = arg1.getName();
 							final Class<?> ifClazz = arg1.getInterfaces()[0];
 
+							{
+								System.out.println("Found implementation of "+ifClazz.getSimpleName());
+							}
+
 							return new Implementation(){
 								public String getImplementationClassName() {
 									return name;

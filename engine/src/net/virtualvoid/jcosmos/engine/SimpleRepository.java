@@ -31,6 +31,7 @@ import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.Predicate;
 import net.virtualvoid.jcosmos.functional.v0.PredicateMin;
 import net.virtualvoid.jcosmos.functional.v0.Predicates;
+import net.virtualvoid.jcosmos.functional.v0.RASeq;
 import net.virtualvoid.jcosmos.functional.v0.Seq;
 import net.virtualvoid.jcosmos.functional.v0.Seqs;
 import net.virtualvoid.jcosmos.io.ClassLocations;
@@ -51,11 +52,21 @@ public class SimpleRepository implements Repository{
 	private final LazyVal<Seq<Module>> modules = new LazyVal<Seq<Module>>(){
 		@Override
 		protected net.virtualvoid.jcosmos.functional.v0.Seq<Module> retrieve() {
-			return Seqs.array(
-					new File("../numbers/bin")
+			RASeq<Module> modules = Seqs.array(
+					new File("../engine/bin")
+					,new File("../functional/bin")
+					,new File("../numbers/bin")
+					,new File("../bank-app/bin")
 					,new File("../calc-app/bin"))
 						.map(file2module)
 						.asArray();
+			modules.foreach(new F1<Module,Void>(){
+				public Void apply(Module arg1) {
+					System.out.println("Found module "+arg1.getName());
+					return null;
+				}
+			});
+			return modules;
 		};
 	};
 

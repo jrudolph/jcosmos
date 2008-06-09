@@ -61,16 +61,22 @@ public class FactoryHelper {
 	void init(){
 		try {
 			ClassLoader preFunc = new VerboseCL("preliminaryFunctional",new URL[]{new URL("file:../functional/bin/")},Engine.ifCl);
-			register(Seqs.class,(Seqs)preFunc.loadClass("net.virtualvoid.functional.Sequences").newInstance());
-			register(Predicates.class,(Predicates)preFunc.loadClass("net.virtualvoid.functional.Predicates").newInstance());
+			Seqs Seqs=(Seqs)preFunc.loadClass("net.virtualvoid.functional.Sequences").newInstance();
+			Predicates Preds = (Predicates)preFunc.loadClass("net.virtualvoid.functional.Predicates").newInstance();
+			SimpleExtractor extractor = new SimpleExtractor();
+			LocationFactory locationFactory = new LocationFactory();
+
+			register(Seqs.class,Seqs);
+			register(Predicates.class,Preds);
+			register(ClassLocations.class, locationFactory);
+			register(Extractor.class, extractor);
+
+			repo = new SimpleRepository();
+			fillInImports(repo);
+
 		} catch (Exception e) {
 			throw new Error(e);
 		}
-		register(ClassLocations.class, new LocationFactory());
-		register(Extractor.class, new SimpleExtractor());
-
-		repo = new SimpleRepository();
-		fillInImports(repo);
 	}
 
 	<T> T getFactory(final Class<T> clazz){

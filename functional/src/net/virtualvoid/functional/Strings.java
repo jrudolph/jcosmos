@@ -5,10 +5,12 @@ import java.io.PrintStream;
 import net.virtualvoid.functional.Functions.IRichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction1;
 import net.virtualvoid.functional.Functions.RichFunction2;
+import net.virtualvoid.jcosmos.annotation.Export;
 import net.virtualvoid.jcosmos.functional.v0.F1;
 import net.virtualvoid.jcosmos.functional.v0.F2;
 
-public class Strings {
+@Export
+public class Strings implements net.virtualvoid.jcosmos.functional.util.v0.Strings{
 	public final static IRichFunction1<Object,String> toStringF =
 		new RichFunction1<Object,String>(){
 			public String apply(Object arg1) {
@@ -22,7 +24,7 @@ public class Strings {
 			}
 		};
 	}
-	public static F2<StringBuilder,String,StringBuilder> join(final String sep){
+	public F2<StringBuilder,String,StringBuilder> join(final String sep){
 		return new RichFunction2<StringBuilder, String, StringBuilder>(){
 			public StringBuilder apply(StringBuilder arg1, String arg2) {
 				if (arg1.length() != 0)
@@ -39,4 +41,11 @@ public class Strings {
 				return arg1;
 			}
 		};
+	public F1<Object, String> format(final String format) {
+		return new F1<Object, String>(){
+			public String apply(Object arg1) {
+				return String.format(format,arg1);
+			}
+		};
+	}
 }
